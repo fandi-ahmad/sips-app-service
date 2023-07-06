@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-130795909-1');
+  </script>
+</head>
+<body>
+
+  <div id="app">
+    <%- include('../components/navbar') %>
+    <%- include('../components/sidebar') %>
+
+    <section class="is-title-bar">
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+        <ul>
+          <li>Pegawai</li>
+        </ul>
+        <a href="https://justboil.me/" onclick="alert('Coming soon'); return false" target="_blank" class="button blue">
+          <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
+          <span>Premium Demo</span>
+        </a>
+      </div>
+    </section>
+    
+    <section class="section main-section">
+  
+      <div class="card has-table">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
+            Daftar Pegawai
+          </p>
+          <a href="#" class="card-header-icon">
+            <span class="icon"><i class="mdi mdi-reload"></i></span>
+          </a>
+        </header>
+        <div class="card-content">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>NIP</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+
+                <% pegawais.forEach((pegawai, index) => { %>
+                  <tr>
+                    <td class="image-cell"><%= index + 1 %></td>
+                    <td><%= pegawai.nama %></td>
+                    <td><%= pegawai.jabatan %></td>
+                    <td><%= pegawai.nip %></td>
+                    <td class="actions-cell">
+                      <div class="buttons right nowrap">
+                        <button class="button small green --jb-modal"  data-target="sample-modal-2" type="button">
+                          <span class="icon"><i class="mdi mdi-eye"></i></span>
+                        </button>
+                        <button class="button small red --jb-modal" data-target="sample-modal" type="button">
+                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-pagination">
+            <div class="flex items-center justify-between">
+              <div class="buttons">
+                <button type="button" class="button active">1</button>
+                <button type="button" class="button">2</button>
+                <button type="button" class="button">3</button>
+              </div>
+              <small>Page 1 of 3</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <%- include('../components/footer') %>
+      
+    
+    <div id="sample-modal" class="modal">
+      <div class="modal-background --jb-modal-close"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Sample modal</p>
+        </header>
+        <section class="modal-card-body">
+          <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
+          <p>This is sample modal</p>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button --jb-modal-close">Cancel</button>
+          <button class="button red --jb-modal-close">Confirm</button>
+        </footer>
+      </div>
+    </div>
+    
+    <div id="sample-modal-2" class="modal">
+      <div class="modal-background --jb-modal-close"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Sample modal</p>
+        </header>
+        <section class="modal-card-body">
+          <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
+          <p>This is sample modal</p>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button --jb-modal-close">Cancel</button>
+          <button class="button blue --jb-modal-close">Confirm</button>
+        </footer>
+      </div>
+    </div>
+    
+  </div>
+  
+</body>
+</html>
+
+<script>
+  const clickMe = () => {
+    console.log('testing')
+  }
+</script>
+
+<!-- Scripts below are for demo only -->
+<script type="text/javascript" src="../assets/js/main.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script type="text/javascript" src="../assets//js/chart.sample.min.js"></script>
+
+<script>
+  !function(f,b,e,v,n,t,s){
+    if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)
+  }(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '658339141622648'
+  );
+  fbq('track', 'PageView');
+</script>
+
+<!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
