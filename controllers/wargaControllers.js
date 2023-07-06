@@ -7,8 +7,8 @@ const getAllWarga = async (req, res) => {
             status: 'ok',
             data: data
         }
-        // res.json(result)
-        res.render('warga', {status: 'okey'})
+        res.json(result)
+        // res.render('warga', {status: 'okey'})
     } catch (error) {
         // res.status(400)
         console.log(error, '<-- error get all warga')

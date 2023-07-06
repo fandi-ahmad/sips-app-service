@@ -7,8 +7,8 @@ const getAllPegawai = async (req, res) => {
             status: 'ok',
             data: data
         }
-        // res.json(result)
-        res.render('dashboard', {pegawais: data, status: 'okey'})
+        res.json(result)
+        // res.render('dashboard', {pegawais: data, status: 'okey'})
     } catch (error) {
         // res.status(400)
         console.log(error, '<-- error get all pegawai')
