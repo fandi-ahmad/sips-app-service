@@ -16,7 +16,13 @@
       <li class="" id="pegawai">
         <a href="/pegawai">
           <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-          <span class="menu-item-label">pegawai</span>
+          <span class="menu-item-label">Pegawai</span>
+        </a>
+      </li>
+      <li class="" id="surat">
+        <a href="/surat">
+          <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+          <span class="menu-item-label">Surat</span>
         </a>
       </li>
     </ul>
@@ -35,6 +41,8 @@ const checkActivePage = () => {
     getId('dashboard').classList.add('active')
   } else if (pathname == '/pegawai') {
     getId('pegawai').classList.add('active')
+  } else if (pathname == '/surat') {
+    getId('surat').classList.add('active')
   }
 }
 
