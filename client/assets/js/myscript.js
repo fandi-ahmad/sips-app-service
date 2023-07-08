@@ -16,5 +16,7 @@
 //   );
 //   fbq('track', 'PageView');
 
+document.querySelector('title').textContent = "SIPS APP";
+
 const ref = (id) => document.getElementById(id)
 const set = (key, value) => localStorage.setItem(key, value)
