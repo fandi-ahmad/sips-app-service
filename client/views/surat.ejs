@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surat</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
+  <script src="../assets/js/tailwindcdn.js"></script>
+</head>
+<body>
+
+  <div id="app">
+    <%- include('../components/navbar') %>
+    <%- include('../components/sidebar') %>
+
+    <section class="is-title-bar">
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+        <ul>
+          <li>Surat</li>
+        </ul>
+        <button class="button blue --jb-modal" data-target="create-modal" type="button">
+          <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
+          <span>Create New</span>
+        </button>
+      </div>
+    </section>
+    
+    <section class="section main-section">
+  
+      <div class="card has-table">
+        <header class="card-header">
+          <p class="card-header-title">
+            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
+            Daftar Surat
+          </p>
+          <a onclick="refreshPage()" class="card-header-icon" style="cursor: pointer;">
+            <span class="icon"><i class="mdi mdi-reload"></i></span>
+          </a>
+        </header>
+        <div class="card-content">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>No Surat</th>
+                <th>Nama Surat</th>
+                <th>Maksud</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% surats.forEach((surat, index) => { %>
+                <tr>
+                  <td class="image-cell"><%= index + 1 %>.</td>
+                  <td><%= surat.no_surat %></td>
+                  <td><%= surat.nama_surat %></td>
+                  <td><%= surat.maksud %></td>
+                  <td><small><%= surat.createdAt %></small></td>
+                  <td class="actions-cell">
+                    <div class="buttons right nowrap">
+                      <button id="editButton" class="button small green --jb-modal"  data-target="edit" type="button"
+                       data-id="<%= surat.id %>"
+                       data-nama="<%= surat.no_surat %>"
+                       data-jabatan="<%= surat.nama_surat %>"
+                       data-nip="<%= surat.maksud %>"
+                      >
+                        <span class="icon"><i class="mdi mdi-pen"></i></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <div class="table-pagination">
+            <div class="flex items-center justify-between">
+              <div class="buttons">
+                <button type="button" class="button active">1</button>
+                <button type="button" class="button">2</button>
+                <button type="button" class="button">3</button>
+              </div>
+              <small>Page 1 of 3</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <%- include('../components/footer') %>
+
+    <!-- ===== CREATE FORM ===== -->
+    <div id="create-modal" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card w-4/5">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Create Surat</p>
+        </header>
+        <section class="modal-card-body">
+
+          <!-- WARGA -->
+          <div class="field" id="createWargaForm">
+            <label><b>Data Warga</b></label>
+            <div class="field-body grid grid-rows-4 grid-flow-col gap-4">
+              <%- include('../components/baseInput', {label: 'nama', id: 'nama_warga'}) %>
+              <%- include('../components/baseInput', {label: 'nik', id: 'nik_warga'}) %>
+              <%- include('../components/baseInput', {label: 'jenis kelamin', id: 'jenis_kelamin_warga'}) %>
+              <%- include('../components/baseInput', {label: 'tempat lahir', id: 'tempat_lahir_warga'}) %>
+              <%- include('../components/baseInput', {label: 'tanggal lahir', id: 'tanggal_lahir_warga'}) %>
+              <%- include('../components/baseInput', {label: 'pekerjaan', id: 'pekerjaan_warga'}) %>
+              <%- include('../components/baseInput', {label: 'kewarganegaraan', id: 'kewarganegaraan_warga'}) %>
+              <%- include('../components/baseInput', {label: 'status', id: 'status_warga'}) %>
+              <%- include('../components/baseInput', {label: 'agama', id: 'agama_warga'}) %>
+              <%- include('../components/baseInput', {label: 'alamat', id: 'alamat_warga'}) %>
+              <%- include('../components/baseInput', {label: 'rt/rw', id: 'rt_rw_warga'}) %>
+            </div>
+          </div>
+
+          <!-- WARGA PELAPOR -->
+          <div class="field hidden" id="createWpForm">
+            <label><b>Data Warga Pelapor</b></label>
+            <div class="field-body grid grid-rows-4 grid-flow-col gap-4">
+              <%- include('../components/baseInput', {label: 'nama', id: 'nama_wp'}) %>
+              <%- include('../components/baseInput', {label: 'nik', id: 'nik_wp'}) %>
+              <%- include('../components/baseInput', {label: 'jenis kelamin', id: 'jenis_kelamin_wp'}) %>
+              <%- include('../components/baseInput', {label: 'tempat lahir', id: 'tempat_lahir_wp'}) %>
+              <%- include('../components/baseInput', {label: 'tanggal lahir', id: 'tanggal_lahir_wp'}) %>
+              <%- include('../components/baseInput', {label: 'pekerjaan', id: 'pekerjaan_wp'}) %>
+              <%- include('../components/baseInput', {label: 'kewarganegaraan', id: 'kewarganegaraan_wp'}) %>
+              <%- include('../components/baseInput', {label: 'status', id: 'status_wp'}) %>
+              <%- include('../components/baseInput', {label: 'agama', id: 'agama_wp'}) %>
+              <%- include('../components/baseInput', {label: 'alamat', id: 'alamat_wp'}) %>
+              <%- include('../components/baseInput', {label: 'rt/rw', id: 'rt_rw_wp'}) %>
+            </div>
+          </div>
+
+          <!-- SURAT -->
+          <div class="field hidden" id="createSuratForm">
+            <label><b>Data Surat</b></label>
+            <div class="field-body grid grid-rows-3 grid-flow-col gap-4 px-60">
+              <%- include('../components/baseInput', {label: 'no surat', id: 'no_surat'}) %>
+              <%- include('../components/baseInput', {label: 'nama surat', id: 'nama_surat'}) %>
+              <%- include('../components/baseInput', {label: 'maksud', id: 'maksud_surat'}) %>
+            </div>
+          </div>
+
+
+          <div class="flex justify-end">
+            <div class="control">
+              <div class="button red --jb-modal-close" id="btnCancel">Cancel</div>
+              <div onclick="backtoWarga()" class="button bg-gray-500 hover:bg-gray-600 text-white border-0 hidden" id="btnBackToWarga">Back to warga</div>
+              <div onclick="backtoWp()" class="button bg-gray-500 hover:bg-gray-600 text-white border-0 hidden" id="btnBackToWp">Back to wp</div>
+            </div>
+            <div class="control ml-4">
+              <div onclick="nextToWp()" class="button blue" id="btnNextToWp">Next to wp</div>
+              <div onclick="nextToSurat()" class="button blue hidden" id="btnNextToSurat">Next to surat</div>
+              <button type="submit" onclick="createSurat()" class="button blue hidden" id="btnCreateSurat">Create</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    
+    <!-- ===== UPDATE FORM ===== -->
+    <div id="edit" class="modal">
+      <div class="modal-background --jb-modal-close"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Update Pegawai</p>
+        </header>
+        <section class="modal-card-body">
+          <form method="post" action="/api/v1/pegawai/update">
+            <div class="field">
+              <label class="label">Form</label>
+              <div class="field-body">
+                <div class="field">
+                  <input id="editId" class="input" type="hidden" name="id">
+                  <input id="editNama" class="input" type="text" placeholder="Nama" name="nama">
+                </div>
+                <div class="field">
+                  <input id="editJabatan" class="input" type="text" placeholder="Jabatan" name="jabatan">
+                </div>
+                <div class="field">
+                  <input id="editNip" class="input" type="text" placeholder="NIP" name="nip">
+                </div>
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <div class="button --jb-modal-close">Cancel</div>
+              </div>
+              <div class="control">
+                <button type="submit" class="button red --jb-modal-close">Update</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+
+  </div>
+  
+</body>
+</html>
+
+<script>
+  const saveDataWarga = () => {
+    set('nama_warga', ref('nama_warga').value)
+    set('nik_warga', ref('nik_warga').value)
+    set('jenis_kelamin_warga', ref('jenis_kelamin_warga').value)
+    set('tempat_lahir_warga', ref('tempat_lahir_warga').value)
+    set('tanggal_lahir_warga', ref('tanggal_lahir_warga').value)
+    set('pekerjaan_warga', ref('pekerjaan_warga').value)
+    set('kewarganegaraan_warga', ref('kewarganegaraan_warga').value)
+    set('status_warga', ref('status_warga').value)
+    set('agama_warga', ref('agama_warga').value)
+    set('alamat_warga', ref('alamat_warga').value)
+    set('rt_rw_warga', ref('rt_rw_warga').value)
+  }
+
+  const saveDataWp = () => {
+    set('nama_wp', ref('nama_wp').value)
+    set('nik_wp', ref('nik_wp').value)
+    set('jenis_kelamin_wp', ref('jenis_kelamin_wp').value)
+    set('tempat_lahir_wp', ref('tempat_lahir_wp').value)
+    set('tanggal_lahir_wp', ref('tanggal_lahir_wp').value)
+    set('pekerjaan_wp', ref('pekerjaan_wp').value)
+    set('kewarganegaraan_wp', ref('kewarganegaraan_wp').value)
+    set('status_wp', ref('status_wp').value)
+    set('agama_wp', ref('agama_wp').value)
+    set('alamat_wp', ref('alamat_wp').value)
+    set('rt_rw_wp', ref('rt_rw_wp').value)
+  }
+
+  const saveDataSurat = () => {
+    set('no_surat', ref('no_surat').value)
+    set('nama_surat', ref('nama_surat').value)
+    set('maksud_surat', ref('maksud_surat').value)
+  }
+
+  const nextToWp = () => {
+    ref('createWargaForm').classList.add('hidden')
+    ref('btnCancel').classList.add('hidden')
+    ref('btnNextToWp').classList.add('hidden')
+
+    ref('createWpForm').classList.remove('hidden')
+    ref('btnBackToWarga').classList.remove('hidden')
+    ref('btnNextToSurat').classList.remove('hidden')
+
+    saveDataWarga()
+  }
+
+  const backtoWarga = () => {
+    ref('createWargaForm').classList.remove('hidden')
+    ref('btnCancel').classList.remove('hidden')
+    ref('btnNextToWp').classList.remove('hidden')
+
+    ref('createWpForm').classList.add('hidden')
+    ref('btnBackToWarga').classList.add('hidden')
+    ref('btnNextToSurat').classList.add('hidden')
+  }
+
+  const nextToSurat = () => {
+    ref('createWpForm').classList.add('hidden')
+    ref('btnBackToWarga').classList.add('hidden')
+    ref('btnNextToSurat').classList.add('hidden')
+
+    ref('createSuratForm').classList.remove('hidden')
+    ref('btnBackToWp').classList.remove('hidden')
+    ref('btnCreateSurat').classList.remove('hidden')
+
+    saveDataWp()
+  }
+
+  const backtoWp = () => {
+    ref('createWpForm').classList.remove('hidden')
+    ref('btnBackToWarga').classList.remove('hidden')
+    ref('btnNextToSurat').classList.remove('hidden')
+
+    ref('createSuratForm').classList.add('hidden')
+    ref('btnBackToWp').classList.add('hidden')
+    ref('btnCreateSurat').classList.add('hidden')
+  }
+
+  // get id for edit
+  const editButtons = document.querySelectorAll('.button[data-target="edit"]')
+  editButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+      const data = this.dataset
+      editId.value = data.id
+      editNama.value = data.nama
+      editJabatan.value = data.jabatan
+      editNip.value = data.nip
+    });
+  });
+
+  const refreshPage = () => {
+    window.location.reload()
+  }
+
+</script>
+
+<!-- Scripts below are for demo only -->
+<script type="text/javascript" src="../assets/js/main.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script type="text/javascript" src="../assets//js/chart.sample.min.js"></script>
+<script src="../assets/js/myscript.js"></script>
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">

@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Warga extends Model {
+  class Warga_pelapor extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Warga.hasOne(models.Surat, { foreignKey: 'id_warga' })
+      Warga_pelapor.hasOne(models.Surat, { foreignKey: 'id_warga_pelapor' })
     }
   }
-  Warga.init({
+  Warga_pelapor.init({
     nama: DataTypes.STRING,
     nik: DataTypes.STRING,
     jenis_kelamin: DataTypes.ENUM('l', 'p'),
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     rt_rw: DataTypes.STRING,
   }, {
     sequelize,
-    modelName: 'Warga',
+    modelName: 'Warga_pelapor',
   });
-  return Warga;
+  return Warga_pelapor;
 };
