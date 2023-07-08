@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="../assets/css/main.css">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
@@ -25,10 +25,10 @@
         <ul>
           <li>Pegawai</li>
         </ul>
-        <a href="https://justboil.me/" onclick="alert('Coming soon'); return false" target="_blank" class="button blue">
+        <button class="button blue --jb-modal" data-target="create-modal" type="button">
           <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
-          <span>Premium Demo</span>
-        </a>
+          <span>Create New</span>
+        </button>
       </div>
     </section>
     
@@ -40,7 +40,7 @@
             <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
             Daftar Pegawai
           </p>
-          <a href="#" class="card-header-icon">
+          <a onclick="refreshPage()" class="card-header-icon" style="cursor: pointer;">
             <span class="icon"><i class="mdi mdi-reload"></i></span>
           </a>
         </header>
@@ -56,28 +56,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-
-                <% pegawais.forEach((pegawai, index) => { %>
-                  <tr>
-                    <td class="image-cell"><%= index + 1 %></td>
-                    <td><%= pegawai.nama %></td>
-                    <td><%= pegawai.jabatan %></td>
-                    <td><%= pegawai.nip %></td>
-                    <td class="actions-cell">
-                      <div class="buttons right nowrap">
-                        <button class="button small green --jb-modal"  data-target="sample-modal-2" type="button">
-                          <span class="icon"><i class="mdi mdi-eye"></i></span>
-                        </button>
-                        <button class="button small red --jb-modal" data-target="sample-modal" type="button">
-                          <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                <% }) %>
-
-              </tr>
+              <% pegawais.forEach((pegawai, index) => { %>
+                <tr>
+                  <td class="image-cell"><%= index + 1 %></td>
+                  <td><%= pegawai.nama %></td>
+                  <td><%= pegawai.jabatan %></td>
+                  <td><%= pegawai.nip %></td>
+                  <td class="actions-cell">
+                    <div class="buttons right nowrap">
+                      <button id="editButton" class="button small green --jb-modal"  data-target="edit" type="button"
+                       data-id="<%= pegawai.id %>"
+                       data-nama="<%= pegawai.nama %>"
+                       data-jabatan="<%= pegawai.jabatan %>"
+                       data-nip="<%= pegawai.nip %>"
+                      >
+                        <span class="icon"><i class="mdi mdi-pen"></i></span>
+                      </button>
+                      <button class="button small red --jb-modal" data-target="delete" type="button" data-id="<%= pegawai.id %>">
+                        <span class="icon"><i class="mdi mdi-trash-can"></i></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
             </tbody>
           </table>
           <div class="table-pagination">
@@ -95,51 +96,144 @@
     </section>
   
     <%- include('../components/footer') %>
-      
-    
-    <div id="sample-modal" class="modal">
+
+    <!-- ===== CREATE FORM ===== -->
+    <div id="create-modal" class="modal">
       <div class="modal-background --jb-modal-close"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Sample modal</p>
+          <p class="modal-card-title">Create Pegawai</p>
         </header>
         <section class="modal-card-body">
-          <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-          <p>This is sample modal</p>
+          <form method="post" action="/api/v1/pegawai">
+            <div class="field">
+              <label class="label">Form</label>
+              <div class="field-body">
+                <div class="field">
+                  <input class="input" type="text" placeholder="Nama" name="nama">
+                </div>
+                <div class="field">
+                  <input class="input" type="text" placeholder="Jabatan" name="jabatan">
+                </div>
+                <div class="field">
+                  <input class="input" type="text" placeholder="NIP" name="nip">
+                </div>
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <div class="button --jb-modal-close">Cancel</div>
+              </div>
+              <div class="control">
+                <button type="submit" class="button red --jb-modal-close">Create</button>
+              </div>
+            </div>
+          </form>
         </section>
-        <footer class="modal-card-foot">
-          <button class="button --jb-modal-close">Cancel</button>
-          <button class="button red --jb-modal-close">Confirm</button>
-        </footer>
       </div>
     </div>
     
-    <div id="sample-modal-2" class="modal">
+    <!-- ===== UPDATE FORM ===== -->
+    <div id="edit" class="modal">
       <div class="modal-background --jb-modal-close"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Sample modal</p>
+          <p class="modal-card-title">Update Pegawai</p>
         </header>
         <section class="modal-card-body">
-          <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-          <p>This is sample modal</p>
+          <form method="post" action="/api/v1/pegawai/update">
+            <div class="field">
+              <label class="label">Form</label>
+              <div class="field-body">
+                <div class="field">
+                  <input id="editId" class="input" type="hidden" name="id">
+                  <input id="editNama" class="input" type="text" placeholder="Nama" name="nama">
+                </div>
+                <div class="field">
+                  <input id="editJabatan" class="input" type="text" placeholder="Jabatan" name="jabatan">
+                </div>
+                <div class="field">
+                  <input id="editNip" class="input" type="text" placeholder="NIP" name="nip">
+                </div>
+              </div>
+            </div>
+            <div class="field grouped">
+              <div class="control">
+                <div class="button --jb-modal-close">Cancel</div>
+              </div>
+              <div class="control">
+                <button type="submit" class="button red --jb-modal-close">Update</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===== DELETE FORM ===== -->
+    <div id="delete" class="modal">
+      <div class="modal-background --jb-modal-close"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Delete</p>
+        </header>
+        <section class="modal-card-body">
+          <p>Delete this?</p>
         </section>
         <footer class="modal-card-foot">
           <button class="button --jb-modal-close">Cancel</button>
-          <button class="button blue --jb-modal-close">Confirm</button>
+          <form action="api/v1/pegawai/delete/" method="post">
+            <input type="hidden" id="deleteWhereId" name="id">
+            <button class="button red --jb-modal-close" type="submit">Confirm</button>
+          </form>
         </footer>
       </div>
     </div>
-    
   </div>
   
 </body>
 </html>
 
 <script>
-  const clickMe = () => {
-    console.log('testing')
+
+  const getTheId = (id) => {
+    return document.getElementById(id)
   }
+
+  const editButtons = document.querySelectorAll('.button[data-target="edit"]');
+  const deleteButtons = document.querySelectorAll('.button[data-target="delete"]');
+  const editId = getTheId('editId')
+  const editNama = getTheId('editNama')
+  const editJabatan = getTheId('editJabatan')
+  const editNip = getTheId('editNip')
+
+  const deleteWhereId = getTheId('deleteWhereId')
+
+  let idForDelete = 0
+
+  // get id for edit
+  editButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+      const data = this.dataset
+      editId.value = data.id
+      editNama.value = data.nama
+      editJabatan.value = data.jabatan
+      editNip.value = data.nip
+    });
+  });
+
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+      idForDelete = parseInt(this.dataset.id)
+      deleteWhereId.value = idForDelete
+    })
+  })
+
+  const refreshPage = () => {
+    window.location.reload()
+  }
+
 </script>
 
 <!-- Scripts below are for demo only -->

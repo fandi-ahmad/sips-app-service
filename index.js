@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
-const port = 8000
+const port = 8001
 const router = require('./routes/router')
+const BodyParser = require("body-parser")
 
+app.use(BodyParser.urlencoded({ extended: true }))
 app.use(express.static('client'));
 app.set('view engine', 'ejs')
 app.set('views', 'client/views')

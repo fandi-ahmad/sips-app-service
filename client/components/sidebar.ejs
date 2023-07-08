@@ -7,19 +7,40 @@
   <div class="menu is-menu-main">
     <p class="menu-label">General</p>
     <ul class="menu-list">
-      <li class="active">
-        <a href="/dashboard">
+      <li class="" id="dashboard">
+        <a href="/">
           <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
           <span class="menu-item-label">Dashboard</span>
         </a>
       </li>
-      <li class="">
+      <li class="" id="pegawai">
         <a href="/pegawai">
           <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
           <span class="menu-item-label">pegawai</span>
         </a>
       </li>
     </ul>
-    
   </div>
 </aside>
+
+<script>
+const pathname = window.location.pathname
+
+const getId = (id) => {
+  return document.getElementById(id)
+}
+
+const checkActivePage = () => {
+  if (pathname == '/') {
+    getId('dashboard').classList.add('active')
+  } else if (pathname == '/pegawai') {
+    getId('pegawai').classList.add('active')
+  }
+}
+
+const mounted = () => {
+  checkActivePage()
+}
+mounted()
+
+</script>
