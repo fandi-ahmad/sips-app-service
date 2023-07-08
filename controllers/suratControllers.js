@@ -8,7 +8,7 @@ const getAllSurat = async (req, res) => {
                 surats.no_surat,
                 surats.nama_surat, 
                 surats.maksud,
-                surats.updatedAt,
+                surats.createdAt,
                 surats.id_pegawai,
                 surats.id_warga,
                 surats.id_warga_pelapor,
@@ -53,7 +53,7 @@ const getAllSurat = async (req, res) => {
                 no_surat: item.no_surat,
                 nama_surat: item.nama_surat,
                 maksud: item.maksud,
-                updatedAt: item.updatedAt,
+                createdAt: item.createdAt,
                 pegawai: {
                     id_pegawai: item.id_pegawai,
                     nama: item.nama_pegawai,
@@ -64,7 +64,7 @@ const getAllSurat = async (req, res) => {
                     id_warga: item.id_warga,
                     nama: item.nama_warga,
                     nik: item.nik,
-                    jenis_kelamin: item.nik,
+                    jenis_kelamin: item.jenis_kelamin,
                     tempat_lahir: item.tempat_lahir,
                     tanggal_lahir: item.tanggal_lahir,
                     pekerjaan: item.pekerjaan,
@@ -78,7 +78,7 @@ const getAllSurat = async (req, res) => {
                     id_warga: item.id_warga_pelapor,
                     nama: item.nama_warga_wp,
                     nik: item.nik_wp,
-                    jenis_kelamin: item.nik_wp,
+                    jenis_kelamin: item.jenis_kelamin_wp,
                     tempat_lahir: item.tempat_lahir_wp,
                     tanggal_lahir: item.tanggal_lahir_wp,
                     pekerjaan: item.pekerjaan_wp,
@@ -91,7 +91,8 @@ const getAllSurat = async (req, res) => {
             };
         });
 
-        res.json({data: formattedData})
+        // res.json({data: formattedData})
+        res.render('surat', {surats: formattedData, message: 'oke'})
     } catch (error) {
         res.json({status: 'error', message: 'something wrong!'})
         console.log(error, '<-- error get all surat')
@@ -100,10 +101,42 @@ const getAllSurat = async (req, res) => {
 
 const createSurat = async (req, res) => {
     try {
-        const data = await sequelize.query()
+        const { no_surat, nama_surat, maksud, id_pegawai, id_warga, id_warga_pelapor } = req.body
+
+        await Surat.create({
+            no_surat: no_surat,
+            nama_surat: nama_surat,
+            maksud: maksud,
+            id_pegawai: id_pegawai,
+            id_warga: id_warga,
+            id_warga_pelapor: id_warga_pelapor
+        })
+
+        res.json({ status: 'ok', message: 'create successfully' })
     } catch (error) {
-        
+        res.json({status: 'error', message: 'something wrong!'})
+        console.log(error, '<-- error get all surat')
     }
 }
 
-module.exports = { getAllSurat }
+const updateSurat = async (req, res) => {
+    try {
+        const { id, no_surat, nama_surat, maksud, id_pegawai, id_warga, id_warga_pelapor } = req.body
+        const surat = await Surat.findByPk(id)
+
+        surat.no_surat = no_surat
+        surat.nama_surat = nama_surat
+        surat.maksud = maksud
+        surat.id_pegawai = id_pegawai
+        surat.id_warga = id_warga
+        surat.id_warga_pelapor = id_warga_pelapor
+
+        surat.save()
+        res.json({ status: 'ok', message: 'upadate successfully' })
+    } catch (error) {
+        res.json({status: 'error', message: 'something wrong!'})
+        console.log(error, '<-- error get all surat')
+    }
+}
+
+module.exports = { getAllSurat, createSurat, updateSurat }

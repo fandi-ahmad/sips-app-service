@@ -1,4 +1,4 @@
-const { Warga } = require('../models')
+const { Warga, Warga_pelapor } = require('../models')
 
 const getAllWarga = async (req, res) => {
     try {
@@ -19,7 +19,7 @@ const createWarga = async (req, res) => {
     try {
         const { nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan, status, agama, alamat, rt_rw } = req.body
 
-        const newPegawai = await Warga.create({
+        const newData = await Warga.create({
             nama: nama,
             nik: nik,
             jenis_kelamin: jenis_kelamin,
@@ -37,8 +37,42 @@ const createWarga = async (req, res) => {
             status: 'ok',
             message: 'create warga successfully',
             data: {
-                id: newPegawai.id,
-                nama: newPegawai.nama,
+                id: newData.id,
+                nama: newData.nama,
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'error',
+            message: 'input tidak boleh kosong'
+        })
+    }
+}
+
+const createWargaPelapor = async (req, res) => {
+    try {
+        const { nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan, status, agama, alamat, rt_rw } = req.body
+
+        const newData = await Warga_pelapor.create({
+            nama: nama,
+            nik: nik,
+            jenis_kelamin: jenis_kelamin,
+            tempat_lahir: tempat_lahir,
+            tanggal_lahir: tanggal_lahir,
+            pekerjaan: pekerjaan,
+            kewarganegaraan: kewarganegaraan,
+            status: status,
+            agama: agama,
+            alamat: alamat,
+            rt_rw: rt_rw,
+        })
+
+        res.status(201).json({
+            status: 'ok',
+            message: 'create warga pelapor successfully',
+            data: {
+                id: newData.id,
+                nama: newData.nama,
             }
         })
     } catch (error) {
@@ -69,4 +103,4 @@ const deleteWarga = async (req, res) => {
     }
 }
 
-module.exports = { getAllWarga, createWarga, deleteWarga }
+module.exports = { getAllWarga, createWarga, deleteWarga, createWargaPelapor }
