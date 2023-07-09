@@ -1,43 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Surat</title>
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
-  <script src="../assets/js/tailwindcdn.js"></script>
-</head>
+<%- include('../components/base/head') %>
 <body>
-
   <div id="app">
     <%- include('../components/navbar') %>
     <%- include('../components/sidebar') %>
-
-    <section class="is-title-bar">
-      <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-        <ul>
-          <li>Surat</li>
-        </ul>
-        <button class="button blue --jb-modal" data-target="create-modal" type="button">
-          <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
-          <span>Create New</span>
-        </button>
-      </div>
-    </section>
+    <%- include('../components/titleBar', {title: 'Surat'}) %>
     
     <section class="section main-section">
   
       <div class="card has-table">
-        <header class="card-header">
-          <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-            Daftar Surat
-          </p>
-          <a onclick="refreshPage()" class="card-header-icon" style="cursor: pointer;">
-            <span class="icon"><i class="mdi mdi-reload"></i></span>
-          </a>
-        </header>
+        <%- include('../components/cardHead', {title: 'Daftar Surat'}) %>
         <div class="card-content">
           <table>
             <thead>
@@ -68,6 +39,9 @@
                       >
                         <span class="icon"><i class="mdi mdi-pen"></i></span>
                       </button>
+                      <button class="button small blue --jb-modal" data-target="print-modal">
+                        <span class="icon"><i class="mdi mdi-printer"></i></span>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -93,7 +67,7 @@
     <!-- ===== CREATE FORM ===== -->
     <div id="create-modal" class="modal">
       <div class="modal-background"></div>
-      <div class="modal-card w-4/5">
+      <div class="modal-card w-4/5" style="min-height: 85vh;">
         <header class="modal-card-head">
           <p class="modal-card-title">Create Surat</p>
         </header>
@@ -199,12 +173,214 @@
       </div>
     </div>
 
+    <div id="print-modal" class="modal">
+      <div class="modal-background --jb-modal-close"></div>
+      <div class="modal-card w-11/12 min-h-screen">
+        <section class="modal-card-body">
+          <p class="modal-card-title">Print</p>
+          <button onclick="printArea('printArea')" class="button blue">print</button>
+
+          <div id="printArea">
+            <div id="letterPreview" class="preview-print">
+              <div class="print-preview text-center text-tnr" style="width: 100%; height: fit-content; border: 1px solid black;">
+                <div class="flex flex-row gap-4 justify-center items-center">
+                  <div style="width: 80px;">
+                    <img src="../assets/images/lambang_kota_palu.png" alt="" style="width: 100%;">
+                  </div>
+                  <div>
+                    <h1 class="text-xl leading-none font-medium">PEMERINTAH KOTA PALU</h1>
+                    <P class="text-2xl leading-none" style="font-weight: 900;">KECAMATAN PALU BARAT</P>
+                    <P class="text-2xl leading-none" style="font-weight: 900;">KELURAHAN BALAROA</P>
+                    <P class="font-bold leading-none">JL. Yambaere No. 05</P>
+                  </div>
+                </div>
+
+                <hr class="my-1" style="border: 1px solid black;">
+
+                <div class="mb-2">
+                  <u><b>SURAT KETERANGAN TIDAK MAMPU (SKTM)</b></u>
+                  <p class="leading-none">NOMOR: xxx/xx.xx/BLR/VII/2023</p>
+                </div>
+
+                <div class="my-table mb-2">
+                  <div class="text-left">Yang bertanda tangan dibawah ini:</div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Nama</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Jabatan</div>
+                    <div>: </div>
+                  </div>
+                </div>
+
+                <div class="my-table mb-2">
+                  <div class="text-left">Dengan ini menerangkan bahwa:</div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Nama</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Jenis kelamin</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Agama</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Pekerjaan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Status Perkawinan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Kewarganegaraan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Alamat</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">RT/RW</div>
+                    <div>: </div>
+                  </div>
+                </div>
+
+                <div class="my-table mb-2">
+                  <div class="text-left">Adalah benar Orang Tua/Wali dari:</div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Nama</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Jenis kelamin</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Agama</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Pekerjaan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Status Perkawinan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Kewarganegaraan</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Alamat</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">RT/RW</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left">Maksud</div>
+                    <div>: </div>
+                  </div>
+                  <div class="flex flex-row">
+                    <div class="w-60 ml-10 text-left font-bold italic">Penghasilan Orang Tua</div>
+                    <div class="font-bold italic">: Rp.</div>
+                  </div>
+                </div>
+
+                <p class="text-justify">
+                  Bahwa benar yang namanya tersebut si atas adalah Warga/Penduduk Kelurahan Balaroa, Kecamatan Palu Barat, Kota Palu, RT.001 RW.002, 
+                  sesuai dengan Surat Pengantar RT. No: -/001-002/BLR/VII/2023 Tanggal 03 Juli 2023 dari keluarga tidak mampu/ekonomi lemah dan Tidak terdaftar sebagai peserta DTKS (Data Terpadu Kesejahteraan Sosial).
+                </p>
+
+                <p class="text-justify indent-10">
+                  Berhubung maksud yang bersangkutan dimintakan agar yang berwenang memberikan bantuan serta fasilitas seperlunya.
+                </p>
+
+                <p class="text-justify indent-10">
+                  Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.
+                </p>
+
+                <div class="flex justify-end">
+                  <div class="ttd">
+                    <div class="mb-20">
+                      <div class="my-4">Palu, 09 Juli 2023</div>
+                      <div>An. LURAH BALAROA</div>
+                      <div>Kasi Pemberdayaan Masyarakat</div>
+                      <div>Dan Kesejahteraan Sosial</div>
+                    </div>
+  
+                    <div class="text-md"><u>RAHMANSYAH. SH</u></div>
+                    <div>NIP: xxxx xxxxx xxx</div>
+                  </div>
+                </div>
+              
+              </div>
+
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <div class="control">
+              <div class="button red --jb-modal-close">Cancel</div>
+            </div>
+            <div class="control ml-4">
+              <div class="button blue">Next to wp</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
   </div>
   
 </body>
 </html>
 
+<script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
 <script>
+  const printArea = (area) => {
+    console.log('run')
+    // ref('letterPreview').style.width = '100%'
+    ref('letterPreview').classList.remove('preview-print')
+    ref('letterPreview').classList.add('if-print')
+    var printPage = document.getElementById(area).innerHTML
+    var oriPage = document.body.innerHTML
+    document.body.innerHTML = printPage
+    window.print()
+    document.body.innerHTML = oriPage
+    location.reload()
+
+    // var printPage = document.getElementById(area).innerHTML;
+    // var docx = htmlDocx.asBlob(printPage);
+    // saveAs(docx, "file.docx");
+
+  }
+
+  window.addEventListener('afterprint', function() {
+    // ref('letterPreview').style.width = '595px'
+    ref('letterPreview').classList.add('preview-print')
+    ref('letterPreview').classList.remove('if-print')
+    console.log('end')
+  });
+
+
   const saveDataWarga = () => {
     set('nama_warga', ref('nama_warga').value)
     set('nik_warga', ref('nik_warga').value)
@@ -295,15 +471,6 @@
     });
   });
 
-  const refreshPage = () => {
-    window.location.reload()
-  }
-
 </script>
 
-<!-- Scripts below are for demo only -->
-<script type="text/javascript" src="../assets/js/main.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-<script type="text/javascript" src="../assets//js/chart.sample.min.js"></script>
-<script src="../assets/js/myscript.js"></script>
-<link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+<%- include('../components/base/footer') %>

@@ -3,47 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title></title>
   <link rel="stylesheet" href="../assets/css/main.css">
-
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-130795909-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-130795909-1');
-  </script>
+  <script src="../assets/js/tailwindcdn.js"></script>
+  <script src="../assets/js/myscript.js"></script>
 </head>
 <body>
 
   <div id="app">
     <%- include('../components/navbar') %>
     <%- include('../components/sidebar') %>
-
-    <section class="is-title-bar">
-      <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-        <ul>
-          <li>Pegawai</li>
-        </ul>
-        <button class="button blue --jb-modal" data-target="create-modal" type="button">
-          <span class="icon"><i class="mdi mdi-credit-card-outline"></i></span>
-          <span>Create New</span>
-        </button>
-      </div>
-    </section>
+    <%- include('../components/titleBar', {title: 'Pegawai'}) %>
     
     <section class="section main-section">
   
       <div class="card has-table">
-        <header class="card-header">
-          <p class="card-header-title">
-            <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
-            Daftar Pegawai
-          </p>
-          <a onclick="refreshPage()" class="card-header-icon" style="cursor: pointer;">
-            <span class="icon"><i class="mdi mdi-reload"></i></span>
-          </a>
-        </header>
+        <%- include('../components/cardHead', {title: 'Daftar Pegawai'}) %>
         <div class="card-content">
           <table>
             <thead>
@@ -230,9 +206,6 @@
     })
   })
 
-  const refreshPage = () => {
-    window.location.reload()
-  }
 
 </script>
 
@@ -240,21 +213,5 @@
 <script type="text/javascript" src="../assets/js/main.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 <script type="text/javascript" src="../assets//js/chart.sample.min.js"></script>
-
-<script>
-  !function(f,b,e,v,n,t,s){
-    if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)
-  }(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '658339141622648'
-  );
-  fbq('track', 'PageView');
-</script>
-
 <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
 <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
