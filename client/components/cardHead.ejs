@@ -1,0 +1,15 @@
+<header class="card-header">
+  <p class="card-header-title">
+    <span class="icon"><i class="mdi mdi-account-multiple"></i></span>
+    <%- locals.title || '' %>
+  </p>
+  <a class="card-header-icon" style="cursor: pointer;" onclick='refreshPage()'>
+    <span class="icon"><i class="mdi mdi-reload"></i></span>
+  </a>
+</header>
+
+<script>
+  const refreshPage = () => {
+    window.location.reload()
+  }
+</script>
