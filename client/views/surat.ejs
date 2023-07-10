@@ -25,10 +25,10 @@
               <% surats.forEach((surat, index) => { %>
                 <tr>
                   <td class="image-cell"><%= index + 1 %>.</td>
-                  <td><%= surat.no_surat %></td>
-                  <td><%= surat.nama_surat %></td>
-                  <td><%= surat.maksud %></td>
-                  <td><small><%= surat.createdAt %></small></td>
+                  <td data-label="No Surat"><%= surat.no_surat %></td>
+                  <td data-label="Nama Surat"><%= surat.nama_surat %></td>
+                  <td data-label="Maksud"><%= surat.maksud %></td>
+                  <td data-label="Created"><small><%= surat.createdAt %></small></td>
                   <td class="actions-cell">
                     <div class="buttons right nowrap">
                       <button id="editButton" class="button small green --jb-modal"  data-target="edit" type="button"
@@ -351,8 +351,8 @@
 </body>
 </html>
 
-<script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<!-- <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script> -->
 
 <script>
   const printArea = (area) => {
