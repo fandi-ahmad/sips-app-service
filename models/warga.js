@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Warga.hasOne(models.Surat, { foreignKey: 'id_warga' })
+      Warga.hasOne(models.Surat, { foreignKey: 'id_warga_pelapor' })
     }
   }
   Warga.init({
