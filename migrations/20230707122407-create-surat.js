@@ -11,6 +11,7 @@ module.exports = {
       },
       no_surat: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
       nama_surat: {
@@ -19,6 +20,9 @@ module.exports = {
       },
       maksud: {
         type: Sequelize.STRING
+      },
+      isi_surat: {
+        type: Sequelize.TEXT
       },
       id_pegawai: {
         allowNull: false,
