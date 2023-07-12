@@ -51,9 +51,7 @@ const deletePegawai = async (req, res) => {
             })
         }
         pegawai.destroy()
-        setTimeout(() => {
-            res.redirect('/pegawai')
-        }, 100);
+        res.redirect('/pegawai')
     } catch (error) {
         res.status(400)
     }
