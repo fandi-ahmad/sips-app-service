@@ -64,97 +64,67 @@
     <%- include('../components/footer') %>
 
     <!-- ===== CREATE FORM ===== -->
-    <div id="create-modal" class="modal">
-      <div class="modal-background --jb-modal-close"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Create Pegawai</p>
-        </header>
-        <section class="modal-card-body">
-          <form method="post" action="/api/v1/pegawai">
-            <div class="field">
-              <label class="label">Form</label>
-              <div class="field-body">
-                <div class="field">
-                  <input class="input" type="text" placeholder="Nama" name="nama">
-                </div>
-                <div class="field">
-                  <input class="input" type="text" placeholder="Jabatan" name="jabatan">
-                </div>
-                <div class="field">
-                  <input class="input" type="text" placeholder="NIP" name="nip">
-                </div>
-              </div>
-            </div>
-            <div class="field grouped">
-              <div class="control">
-                <div class="button --jb-modal-close">Cancel</div>
-              </div>
-              <div class="control">
-                <button type="submit" class="button red --jb-modal-close">Create</button>
-              </div>
-            </div>
-          </form>
-        </section>
-      </div>
-    </div>
+    <% 
+      const inputLocate = '../components/baseInput'
+      const baseInputNama = include(inputLocate, {name: 'nama'});
+      const baseInputJabatan = include(inputLocate, {name: 'jabatan'});
+      const baseInputNip = include(inputLocate, {name: 'nip'});
+    %>
+    <%- include('../components/modal/baseModal', {title: 'Create Pegawai', body: /*html*/ `
+      <form method="post" action="/api/v1/pegawai">
+        <div class="field-body">
+          ${baseInputNama} ${baseInputJabatan} ${baseInputNip}
+        </div>
+        <div class="field grouped mt-2">
+          <div class="control">
+            <div class="button --jb-modal-close">Cancel</div>
+          </div>
+          <div class="control">
+            <button type="submit" class="button red --jb-modal-close">Create</button>
+          </div>
+        </div>
+      </form>
+    `}) %>
     
     <!-- ===== UPDATE FORM ===== -->
-    <div id="edit" class="modal">
-      <div class="modal-background --jb-modal-close"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Update Pegawai</p>
-        </header>
-        <section class="modal-card-body">
-          <form method="post" action="/api/v1/pegawai/update">
-            <div class="field">
-              <label class="label">Form</label>
-              <div class="field-body">
-                <div class="field">
-                  <input id="editId" class="input" type="hidden" name="id">
-                  <input id="editNama" class="input" type="text" placeholder="Nama" name="nama">
-                </div>
-                <div class="field">
-                  <input id="editJabatan" class="input" type="text" placeholder="Jabatan" name="jabatan">
-                </div>
-                <div class="field">
-                  <input id="editNip" class="input" type="text" placeholder="NIP" name="nip">
-                </div>
-              </div>
-            </div>
-            <div class="field grouped">
-              <div class="control">
-                <div class="button --jb-modal-close">Cancel</div>
-              </div>
-              <div class="control">
-                <button type="submit" class="button red --jb-modal-close">Update</button>
-              </div>
-            </div>
-          </form>
-        </section>
-      </div>
-    </div>
+    <% 
+      const updadeInputId = include(inputLocate, {name: 'id', id: 'editId', type: 'hidden', label: ' '});
+      const updadeInputNama = include(inputLocate, {name: 'nama', id: 'editNama'});
+      const updadeInputJabatan = include(inputLocate, {name: 'jabatan', id: 'editJabatan'});
+      const updadeInputNip = include(inputLocate, {name: 'nip', id: 'editNip'});
+    %>
+    <%- include('../components/modal/baseModal', {title: 'Update Pegawai', id: 'edit', body: /*html*/ `
+      <form method="post" action="/api/v1/pegawai/update">
+        <div class="field-body">
+          ${updadeInputId} ${updadeInputNama} ${updadeInputJabatan} ${updadeInputNip}
+        </div>
+        <div class="field grouped mt-2">
+          <div class="control">
+            <div class="button --jb-modal-close">Cancel</div>
+          </div>
+          <div class="control">
+            <button type="submit" class="button red --jb-modal-close">Create</button>
+          </div>
+        </div>
+      </form>
+    `}) %>
 
     <!-- ===== DELETE FORM ===== -->
-    <div id="delete" class="modal">
-      <div class="modal-background --jb-modal-close"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Delete</p>
-        </header>
-        <section class="modal-card-body">
-          <p>Delete this?</p>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button --jb-modal-close">Cancel</button>
+    <%- include('../components/modal/baseModal', {title: 'Delete Pegawai', id: 'delete', body: /*html*/ `
+      <p class='my-10'>Delete this?</p>
+      <div class="field grouped mt-2">
+        <div class="control">
+          <div class="button --jb-modal-close">Cancel</div>
+        </div>
+        <div class="control">
           <form action="api/v1/pegawai/delete/" method="post">
             <input type="hidden" id="deleteWhereId" name="id">
             <button class="button red --jb-modal-close" type="submit">Confirm</button>
           </form>
-        </footer>
+        </div>
       </div>
-    </div>
+    `}) %>
+
   </div>
   
 </body>
