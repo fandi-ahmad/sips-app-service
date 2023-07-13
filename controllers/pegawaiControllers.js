@@ -3,7 +3,8 @@ const { Pegawai } = require('../models')
 const viewPegawai = async (req, res) => {
     try {
         const data = await Pegawai.findAll()
-        res.render('pegawai', {pegawais: data})
+        const apiUrl = process.env.APP_API_URL;
+        res.render('pegawai', {pegawais: data, apiUrl: apiUrl})
     } catch (error) {
         console.log(error, '<-- error view pegawai')
     }

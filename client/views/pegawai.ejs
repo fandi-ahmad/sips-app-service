@@ -125,6 +125,7 @@
 </html>
 
 <script>
+  const apiUrl = '<%= apiUrl %>';
 
   const getTheId = (id) => {
     return document.getElementById(id)
@@ -147,7 +148,7 @@
 
   const createPegawaiApi = async (nama, jabatan, nip) => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/pegawai', {
+      const response = await fetch(`${apiUrl}/pegawai`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -184,7 +185,7 @@
 
   const updatePegawaApi = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/pegawai/update', {
+      const response = await fetch(`${apiUrl}/pegawai/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -211,7 +212,7 @@
 
   const deletePegawaiApi = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/pegawai/delete', {
+      const response = await fetch(`${apiUrl}/pegawai/delete`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
