@@ -5,6 +5,7 @@ const userRouter = require('./userRouter')
 const { getAllPegawai, viewPegawai } = require('../controllers/pegawaiControllers')
 const { getAllWarga } = require('../controllers/wargaControllers')
 const { getAllSurat, createSurat, updateSurat } = require('../controllers/suratControllers')
+const { viewLogin } = require('../controllers/authControllers')
 
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)
@@ -15,6 +16,7 @@ router.get('/', (req, res) => {
 })
 router.get('/pegawai', viewPegawai)
 router.get('/warga', getAllWarga)
+router.get('/login', viewLogin)
 
 router.get('/surat', getAllSurat)
 router.post('/api/v1/surat', createSurat)
