@@ -1,8 +1,10 @@
 const router = require("express").Router()
-const { createPegawai, updatePegawai, deletePegawai } = require('../controllers/pegawaiControllers')
+const { createPegawai, updatePegawai, deletePegawai, getAllPegawai } = require('../controllers/pegawaiControllers')
+const { verifyToken } = require('../middleware/VerifyToken')
 
+router.get('/pegawai', getAllPegawai)
 router.post('/pegawai', createPegawai)
-router.post('/pegawai/update', updatePegawai)
-router.post('/pegawai/delete', deletePegawai)
+router.put('/pegawai/update', updatePegawai)
+router.delete('/pegawai/delete', deletePegawai)
 
 module.exports = router

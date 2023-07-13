@@ -71,19 +71,17 @@
       const baseInputNip = include(inputLocate, {name: 'nip'});
     %>
     <%- include('../components/modal/baseModal', {title: 'Create Pegawai', body: /*html*/ `
-      <form method="post" action="/api/v1/pegawai">
-        <div class="field-body">
-          ${baseInputNama} ${baseInputJabatan} ${baseInputNip}
+      <div class="field-body">
+        ${baseInputNama} ${baseInputJabatan} ${baseInputNip}
+      </div>
+      <div class="field grouped mt-2">
+        <div class="control">
+          <div class="button --jb-modal-close" id="btnCancel">Cancel</div>
         </div>
-        <div class="field grouped mt-2">
-          <div class="control">
-            <div class="button --jb-modal-close">Cancel</div>
-          </div>
-          <div class="control">
-            <button type="submit" class="button red --jb-modal-close">Create</button>
-          </div>
+        <div class="control">
+          <button type="submit" class="button red" onclick="createPegawaiForm()">Create</button>
         </div>
-      </form>
+      </div>
     `}) %>
     
     <!-- ===== UPDATE FORM ===== -->
@@ -94,19 +92,17 @@
       const updadeInputNip = include(inputLocate, {name: 'nip', id: 'editNip'});
     %>
     <%- include('../components/modal/baseModal', {title: 'Update Pegawai', id: 'edit', body: /*html*/ `
-      <form method="post" action="/api/v1/pegawai/update">
-        <div class="field-body">
-          ${updadeInputId} ${updadeInputNama} ${updadeInputJabatan} ${updadeInputNip}
+      <div class="field-body">
+        ${updadeInputId} ${updadeInputNama} ${updadeInputJabatan} ${updadeInputNip}
+      </div>
+      <div class="field grouped mt-2">
+        <div class="control">
+          <div class="button --jb-modal-close">Cancel</div>
         </div>
-        <div class="field grouped mt-2">
-          <div class="control">
-            <div class="button --jb-modal-close">Cancel</div>
-          </div>
-          <div class="control">
-            <button type="submit" class="button red --jb-modal-close">Create</button>
-          </div>
+        <div class="control">
+          <button type="submit" class="button red" onclick="updatePegawaiForm()">Update</button>
         </div>
-      </form>
+      </div>
     `}) %>
 
     <!-- ===== DELETE FORM ===== -->
@@ -117,10 +113,8 @@
           <div class="button --jb-modal-close">Cancel</div>
         </div>
         <div class="control">
-          <form action="api/v1/pegawai/delete/" method="post">
-            <input type="hidden" id="deleteWhereId" name="id">
-            <button class="button red --jb-modal-close" type="submit">Confirm</button>
-          </form>
+          <input type="hidden" id="deleteWhereId" name="id">
+          <button class="button red" type="submit" onclick="deletePegawaiForm()">Confirm</button>
         </div>
       </div>
     `}) %>
@@ -136,6 +130,44 @@
     return document.getElementById(id)
   }
 
+  let pegawaisApi = []
+
+  // btn create
+  const createPegawaiForm = async () => {
+    nama = getTheId('nama').value
+    jabatan = getTheId('jabatan').value
+    nip = getTheId('nip').value
+    
+    if (nama == '' && jabatan == '' && nip == '') {
+      alert('input tidak boleh kosong')
+    } else {
+      createPegawaiApi(nama, jabatan, nip)
+    }
+  }
+
+  const createPegawaiApi = async (nama, jabatan, nip) => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/pegawai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          nama: nama,
+          jabatan: jabatan,
+          nip: nip
+        })
+      });
+      const data = await response.json()
+      location.reload()
+      alert('create pegawai successfully')
+    } catch (error) {
+      alert('ups, something wrong!')
+      console.log('Error:', error);
+    }
+  };
+
+
   const editButtons = document.querySelectorAll('.button[data-target="edit"]');
   const deleteButtons = document.querySelectorAll('.button[data-target="delete"]');
   const editId = getTheId('editId')
@@ -144,6 +176,58 @@
   const editNip = getTheId('editNip')
 
   const deleteWhereId = getTheId('deleteWhereId')
+
+  // btn update
+  const updatePegawaiForm = () => {
+    updatePegawaApi()
+  }
+
+  const updatePegawaApi = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/pegawai/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          id: editId.value,
+          nama: editNama.value,
+          jabatan: editJabatan.value,
+          nip: editNip.value
+        })
+      });
+      const data = await response.json()
+      location.reload()
+      alert('update pegawai successfully')
+    } catch (error) {
+      alert('ups, something wrong!')
+      console.log('Error:', error);
+    }
+  }
+
+  const deletePegawaiForm = () => {
+    deletePegawaiApi()
+  }
+
+  const deletePegawaiApi = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/pegawai/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          id: deleteWhereId.value,
+        })
+      });
+      const data = await response.json()
+      location.reload()
+      alert('delete pegawai successfully')
+    } catch (error) {
+      alert('ups, something wrong!')
+      console.log('Error:', error);
+    }
+  }
 
   let idForDelete = 0
 

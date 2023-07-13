@@ -1,9 +1,22 @@
 const { Pegawai } = require('../models')
 
-const getAllPegawai = async (req, res) => {
+const viewPegawai = async (req, res) => {
     try {
         const data = await Pegawai.findAll()
         res.render('pegawai', {pegawais: data})
+    } catch (error) {
+        console.log(error, '<-- error view pegawai')
+    }
+}
+
+const getAllPegawai = async (req, res) => {
+    try {
+        const data = await Pegawai.findAll()
+        res.json({
+            status: 'ok',
+            data: data
+        })
+        // res.render('pegawai', {pegawais: data})
     } catch (error) {
         // res.status(400)
         console.log(error, '<-- error get all pegawai')
@@ -18,7 +31,11 @@ const createPegawai = async (req, res) => {
             jabatan: jabatan,
             nip: nip
         })
-        res.redirect('/pegawai')
+        res.json({
+            status: 'ok',
+            message: 'successfully'
+        })
+        // res.redirect('/pegawai')
     } catch (error) {
         res.status(400)
         console.log(error, '<-- error create pegawai')
@@ -33,7 +50,12 @@ const updatePegawai = async (req, res) => {
         pegawai.jabatan = jabatan
         pegawai.nip = nip
         pegawai.save()
-        res.redirect('/pegawai')
+
+        res.json({
+            status: 'ok',
+            message: 'successfully'
+        })
+        // res.redirect('/pegawai')
     } catch (error) {
         res.status(400)
         console.log(error, '<-- error update pegawai')
@@ -51,10 +73,14 @@ const deletePegawai = async (req, res) => {
             })
         }
         pegawai.destroy()
-        res.redirect('/pegawai')
+        res.json({
+            status: 'ok',
+            message: 'successfully'
+        })
+        // res.redirect('/pegawai')
     } catch (error) {
         res.status(400)
     }
 }
 
-module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai }
+module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai, viewPegawai }
