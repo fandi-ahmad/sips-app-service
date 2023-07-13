@@ -151,7 +151,8 @@
       const response = await fetch(`${apiUrl}/pegawai`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getItem('accessToken')}`
         },
         body: JSON.stringify({ 
           nama: nama,
@@ -188,7 +189,8 @@
       const response = await fetch(`${apiUrl}/pegawai/update`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getItem('accessToken')}`
         },
         body: JSON.stringify({ 
           id: editId.value,
@@ -215,7 +217,8 @@
       const response = await fetch(`${apiUrl}/pegawai/delete`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getItem('accessToken')}`
         },
         body: JSON.stringify({ 
           id: deleteWhereId.value,

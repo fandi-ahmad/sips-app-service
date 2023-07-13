@@ -6,6 +6,7 @@ const { getAllPegawai, viewPegawai } = require('../controllers/pegawaiController
 const { getAllWarga } = require('../controllers/wargaControllers')
 const { getAllSurat, createSurat, updateSurat } = require('../controllers/suratControllers')
 const { viewLogin } = require('../controllers/authControllers')
+const { verifyToken } = require('../middleware/VerifyToken')
 
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)

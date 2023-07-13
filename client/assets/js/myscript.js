@@ -20,3 +20,4 @@ document.querySelector('title').textContent = "SIPS APP";
 
 const ref = (id) => document.getElementById(id)
 const set = (key, value) => localStorage.setItem(key, value)
+const getItem = (key) => localStorage.getItem(key)
