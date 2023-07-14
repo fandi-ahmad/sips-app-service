@@ -66,7 +66,15 @@ module.exports = {
         onDelete: 'RESTRICT'
       },
       id_surat_khusus: {
-        type: Sequelize.INTEGER
+        // allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER,
+        // references: {
+        //   model: 'Surat_khusus',
+        //   key: 'id'
+        // },
+        // onUpdate: 'CASCADE',
+        // onDelete: 'RESTRICT'
       },
       createdAt: {
         allowNull: false,
