@@ -14,6 +14,11 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
+      no_surat_number: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER
+      },
       nama_surat: {
         allowNull: false,
         type: Sequelize.STRING
@@ -23,6 +28,12 @@ module.exports = {
       },
       isi_surat: {
         type: Sequelize.TEXT
+      },
+      no_surat_pengantar: {
+        type: Sequelize.STRING
+      },
+      tgl_surat_pengantar: {
+        type: Sequelize.DATE
       },
       id_pegawai: {
         allowNull: false,
@@ -53,6 +64,9 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
+      },
+      id_surat_khusus: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
