@@ -1,22 +1,29 @@
-const { Surat, sequelize, Pegawai, Warga } = require('../../models')
+const { Surat, sequelize, Pegawai, Warga, Surat_khusus, Ket_usaha } = require('../../models')
 
-const getAllSuratKelBaik = async (req, res) => {
+const getAllSuratKetUsaha = async (req, res) => {
     try {
         const dataSurat = await sequelize.query( /*sql*/ `
             SELECT 
-                surats.id, surats.no_surat, surats.nama_surat,  surats.maksud,
+                surats.id, surats.no_surat, surats.nama_surat, surats.maksud,
                 surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
-                surats.no_surat_pengantar, surats.tgl_surat_pengantar,
+                surats.id_surat_khusus,
 
                 pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
 
                 w.nama AS nama_warga, w.nik, w.jenis_kelamin, w.tempat_lahir, w.tanggal_lahir,
-                w.pekerjaan, w.kewarganegaraan, w.status, w.agama, w.alamat, w.rt_rw
+                w.pekerjaan, w.kewarganegaraan, w.status, w.agama, w.alamat, w.rt_rw,
+
+                surat_khusus.id_ket_usaha,
+
+                ku.nama_usaha, ku.jenis_usaha, ku.npwp, ku.no_izin_usaha, ku.no_fiskal,
+                ku.luas_tempat_usaha, ku.alamat_usaha, ku.tahun_berdiri, ku.bertempat
 
             FROM surats 
             JOIN pegawais ON (surats.id_pegawai = pegawais.id)
             JOIN wargas AS w ON (surats.id_warga = w.id)
-            where surats.nama_surat = "surat keterangan berkelakuan baik"
+            JOIN surat_khusus ON (surats.id_surat_khusus = surat_khusus.id)
+            JOIN ket_usahas AS ku ON (surat_khusus.id_ket_usaha = ku.id)
+            where surats.nama_surat = "surat keterangan usaha"
         `)
 
         const formattedData = dataSurat[0].map((item) => {
@@ -49,6 +56,19 @@ const getAllSuratKelBaik = async (req, res) => {
                     alamat: item.alamat,
                     rt_rw: item.rt_rw
                 },
+                ket_usaha: {
+                    id_surat_khusus: item.id_surat_khusus,
+                    id: item.id_ket_usaha,
+                    nama_usaha: item.nama_usaha, 
+                    jenis_usaha: item.jenis_usaha, 
+                    npwp: item.npwp, 
+                    no_izin_usaha: item.no_izin_usaha, 
+                    no_fiskal: item.no_fiskal, 
+                    luas_tempat_usaha: item.luas_tempat_usaha,
+                    alamat_usaha: item.alamat_usaha, 
+                    tahun_berdiri: item.tahun_berdiri, 
+                    bertempat: item.bertempat
+                }
             };
         });
 
@@ -60,18 +80,22 @@ const getAllSuratKelBaik = async (req, res) => {
         res.json(result)
     } catch (error) {
         // res.status(400)
-        console.log(error, '<-- error get all surat kel baik')
+        console.log(error, '<-- error get all surat ket baik')
     }
 }
 
-const createSuratKelBaik = async (req, res) => {
+const createSuratKetUsaha = async (req, res) => {
     try {
         const {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw,
-            no_surat, no_surat_number, maksud, isi_surat, no_surat_pengantar,
-            tgl_surat_pengantar, id_pegawai
+
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
+
+            nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
+            alamat_usaha, tahun_berdiri, bertempat
         } = req.body
+
 
         const newWarga = await Warga.create({
             nama: nama,
@@ -87,42 +111,65 @@ const createSuratKelBaik = async (req, res) => {
             rt_rw: rt_rw,
         })
 
+        const newUsaha = await Ket_usaha.create({
+            nama_usaha: nama_usaha,
+            jenis_usaha: jenis_usaha,
+            npwp: npwp,
+            no_izin_usaha: no_izin_usaha,
+            no_fiskal: no_fiskal,
+            luas_tempat_usaha: luas_tempat_usaha,
+            alamat_usaha: alamat_usaha,
+            tahun_berdiri: tahun_berdiri,
+            bertempat: bertempat
+        })
+
+        const newSuratKhusus = await Surat_khusus.create({
+            id_ket_usaha: newUsaha.id
+        })
+
         const newSurat = await Surat.create({
             no_surat: no_surat,
             no_surat_number: no_surat_number,
-            nama_surat: 'surat keterangan berkelakuan baik',
+            nama_surat: 'surat keterangan usaha',
             maksud: maksud,
             isi_surat: isi_surat,
-            no_surat_pengantar: no_surat_pengantar,
-            tgl_surat_pengantar: tgl_surat_pengantar || null,
             id_pegawai: id_pegawai,
             id_warga: newWarga.id,
+            id_surat_khusus: newSuratKhusus.id
         })
 
-        res.json({ 
-            status: 'ok', 
-            message: 'create successfully',
-            warga: newWarga,
-            surat: newSurat
+
+        res.json({
+            status: 'ok'
         })
     } catch (error) {
-        console.log(error, '<-- error create surat kel baik')
+        res.json({status: 'failed'})
+        console.log(error, '<-- error get all surat ket usaha')
     }
 }
 
-
-const updateSuratKelBaik = async (req, res) => {
+const updateSuratKetUsaha = async (req, res) => {
     try {
         const {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw,
-            id_surat, no_surat, no_surat_number, maksud, isi_surat, no_surat_pengantar,
-            tgl_surat_pengantar, id_pegawai
+
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat,
+
+            nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
+            alamat_usaha, tahun_berdiri, bertempat
         } = req.body
 
         const updateSurat = await Surat.findByPk(id_surat)
+
         const id_warga = updateSurat.dataValues.id_warga
         const updateWarga = await Warga.findByPk(id_warga)
+
+        const id_surat_khusus = updateSurat.dataValues.id_surat_khusus
+        const updateSuratKhusus = await Surat_khusus.findByPk(id_surat_khusus)
+
+        const id_ket_usaha = updateSuratKhusus.dataValues.id_ket_usaha
+        const updateKetUsaha = await Ket_usaha.findByPk(id_ket_usaha)
 
         if (id_pegawai) {
             updateSurat.id_pegawai = id_pegawai
@@ -130,8 +177,6 @@ const updateSuratKelBaik = async (req, res) => {
 
         updateSurat.maksud = maksud
         updateSurat.isi_surat = isi_surat
-        updateSurat.no_surat_pengantar = no_surat_pengantar
-        updateSurat.tgl_surat_pengantar = tgl_surat_pengantar
 
         updateWarga.nama = nama
         updateWarga.nik = nik
@@ -145,40 +190,58 @@ const updateSuratKelBaik = async (req, res) => {
         updateWarga.alamat = alamat
         updateWarga.rt_rw = rt_rw
 
+        updateKetUsaha.nama_usaha = nama_usaha
+        updateKetUsaha.jenis_usaha = jenis_usaha
+        updateKetUsaha.npwp = npwp
+        updateKetUsaha.no_izin_usaha = no_izin_usaha
+        updateKetUsaha.no_fiskal = no_fiskal
+        updateKetUsaha.luas_tempat_usaha = luas_tempat_usaha
+        updateKetUsaha.alamat_usaha = alamat_usaha
+        updateKetUsaha.tahun_berdiri = tahun_berdiri
+        updateKetUsaha.bertempat = bertempat
+
         updateSurat.save()
         updateWarga.save()
+        updateKetUsaha.save()
 
         res.json({
             status: 'ok',
-            message: 'updated successFully',
+            message: 'updated successfully',
             surat: updateSurat,
             warga: updateWarga,
+            ket_usaha: updateKetUsaha
         })
 
     } catch (error) {
-        console.log(error, '<-- error update surat kel baik')
-        res.json({status: 'failed', message: 'data not found'})
+        res.json({status: 'failed'})
+        console.log(error, '<-- error update surat ket usaha')
     }
 }
 
-const deleteSuratKelBaik = async (req, res) => {
+const deleteSuratKetUsaha = async (req, res) => {
     try {
         const { id_surat } = req.body
 
         const deleteSurat = await Surat.findByPk(id_surat)
+
         const id_warga = deleteSurat.dataValues.id_warga
         const deleteWarga = await Warga.findByPk(id_warga)
 
+        const id_surat_khusus = deleteSurat.dataValues.id_surat_khusus
+        const deleteSuratKhusus = await Surat_khusus.findByPk(id_surat_khusus)
+
+        const id_ket_usaha = deleteSuratKhusus.dataValues.id_ket_usaha
+        const deleteKetUsaha = await Ket_usaha.findByPk(id_ket_usaha)
+
         deleteSurat.destroy()
         deleteWarga.destroy()
+        deleteSuratKhusus.destroy()
+        deleteKetUsaha.destroy()
 
-        res.json({
-            status: 'ok',
-            message: 'successfully',
-        })
     } catch (error) {
-        console.log(error, '<-- error delete surat kel baik')
+        res.json({status: 'failed'})
+        console.log(error, '<-- error delete surat ket usaha')
     }
 }
 
-module.exports = { getAllSuratKelBaik, createSuratKelBaik, updateSuratKelBaik, deleteSuratKelBaik }
+module.exports = { getAllSuratKetUsaha, createSuratKetUsaha, updateSuratKetUsaha, deleteSuratKetUsaha }
