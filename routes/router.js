@@ -8,9 +8,14 @@ const { getAllSurat, createSurat, updateSurat } = require('../controllers/suratC
 const { viewLogin } = require('../controllers/authControllers')
 const { verifyToken } = require('../middleware/VerifyToken')
 
+// ===== SURAT ROUTER =====
+const kelBaikRouter = require('./surats/kelBaikRouter')
+
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)
 router.use('/api/v1', userRouter)
+
+router.use('/api/v1/surat', kelBaikRouter)
 
 router.get('/', (req, res) => {
     res.render('dashboard')
