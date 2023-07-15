@@ -2,12 +2,60 @@ const { Surat, sequelize, Pegawai, Warga } = require('../../models')
 
 const getAllSuratKelBaik = async (req, res) => {
     try {
-        const dataWarga = await Warga.findAll()
-        const dataPegawai = await Pegawai.findAll()
+        const dataSurat = await sequelize.query( /*sql*/ `
+            SELECT 
+                surats.id, surats.no_surat, surats.nama_surat,  surats.maksud,
+                surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
+                surats.no_surat_pengantar, surats.tgl_surat_pengantar,
+
+                pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
+
+                w.nama AS nama_warga, w.nik, w.jenis_kelamin, w.tempat_lahir, w.tanggal_lahir,
+                w.pekerjaan, w.kewarganegaraan, w.status, w.agama, w.alamat, w.rt_rw
+
+            FROM surats 
+            JOIN pegawais ON (surats.id_pegawai = pegawais.id)
+            JOIN wargas AS w ON (surats.id_warga = w.id)
+            where surats.nama_surat = "surat keterangan berkelakuan baik"
+        `)
+
+        const formattedData = dataSurat[0].map((item) => {
+            return {
+                id: item.id,
+                no_surat: item.no_surat,
+                nama_surat: item.nama_surat,
+                maksud: item.maksud,
+                isi_surat: item.isi_surat,
+                no_surat_pengantar: item.no_surat_pengantar,
+                tgl_surat_pengantar: item.tgl_surat_pengantar,
+                createdAt: item.createdAt,
+                pegawai: {
+                    id_pegawai: item.id_pegawai,
+                    nama: item.nama_pegawai,
+                    jabatan: item.jabatan,
+                    nip: item.nip
+                },
+                warga: {
+                    id_warga: item.id_warga,
+                    nama: item.nama_warga,
+                    nik: item.nik,
+                    jenis_kelamin: item.jenis_kelamin,
+                    tempat_lahir: item.tempat_lahir,
+                    tanggal_lahir: item.tanggal_lahir,
+                    pekerjaan: item.pekerjaan,
+                    kewarganegaraan: item.kewarganegaraan,
+                    status: item.status,
+                    agama: item.agama,
+                    alamat: item.alamat,
+                    rt_rw: item.rt_rw
+                },
+            };
+        });
+
+
         const result = {
             status: 'ok',
-            warga: dataWarga,
-            dataPegawai: dataPegawai
+            data: formattedData[0]
         }
         res.json(result)
     } catch (error) {
