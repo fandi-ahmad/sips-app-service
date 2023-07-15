@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Surat.belongsTo(models.Pegawai, { foreignKey: 'id_pegawai' })
       Surat.belongsTo(models.Warga, { foreignKey: 'id_warga' })
       Surat.belongsTo(models.Warga_pelapor, { foreignKey: 'id_warga_pelapor' })
-      // Surat.belongsTo(models.Surat_khusus, { foreignKey: 'id_surat_khusus' })
+      Surat.belongsTo(models.Surat_khusus, { foreignKey: 'id_surat_khusus' })
     }
   }
   Surat.init({

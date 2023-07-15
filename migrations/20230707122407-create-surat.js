@@ -56,7 +56,7 @@ module.exports = {
         onDelete: 'RESTRICT'
       },
       id_warga_pelapor: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
         references: {
           model: 'Warga_pelapors',

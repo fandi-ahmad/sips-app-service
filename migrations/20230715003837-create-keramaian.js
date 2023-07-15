@@ -2,31 +2,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Surat_khusus', {
+    await queryInterface.createTable('Keramaians', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_keramaian: {
-        allowNull: true,
-        unique: true,
-        type: Sequelize.INTEGER,
+      hari_tanggal: {
+        type: Sequelize.DATE
       },
-      id_data_khusus: {
-        allowNull: true,
-        unique: true,
-        type: Sequelize.INTEGER
+      waktu: {
+        type: Sequelize.TIME
       },
-      id_ket_usaha: {
-        allowNull: true,
-        unique: true,
-        type: Sequelize.INTEGER
-      },
-      id_kematian: {
-        allowNull: true,
-        unique: true,
+      banyak_undangan: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -40,16 +29,17 @@ module.exports = {
     });
 
     await queryInterface.sequelize.query(`
-      ALTER TABLE surats
-      ADD CONSTRAINT FK_surat_surat_khusus
-      FOREIGN KEY (id_surat_khusus)
-      REFERENCES surat_khusus(id)
+      ALTER TABLE surat_khusus
+      ADD CONSTRAINT FK_surat_khusus_keramaian
+      FOREIGN KEY (id_keramaian)
+      REFERENCES keramaians(id)
       ON UPDATE CASCADE
       ON DELETE RESTRICT;
     `);
-    
+
   },
+  
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Surat_khusus');
+    await queryInterface.dropTable('Keramaians');
   }
 };
