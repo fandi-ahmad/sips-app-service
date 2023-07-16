@@ -11,6 +11,7 @@ const { verifyToken } = require('../middleware/VerifyToken')
 // ===== SURAT ROUTER =====
 const kelBaikRouter = require('./surats/kelBaikRouter')
 const ketUsahaRouter = require('./surats/ketUsahaRouter')
+const ketRumah = require('./surats/ketRumah')
 
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)
@@ -18,6 +19,7 @@ router.use('/api/v1', userRouter)
 
 router.use('/api/v1/surat', kelBaikRouter)
 router.use('/api/v1/surat', ketUsahaRouter)
+router.use('/api/v1/surat', ketRumah)
 
 router.get('/', (req, res) => {
     res.render('dashboard')
