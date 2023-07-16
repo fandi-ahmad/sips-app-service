@@ -17,7 +17,10 @@ module.exports = (sequelize, DataTypes) => {
   Keramaian.init({
     hari_tanggal: DataTypes.DATE,
     waktu: DataTypes.TIME,
-    banyak_undangan: DataTypes.INTEGER
+    banyak_undangan: DataTypes.INTEGER,
+    tempat_acara: DataTypes.STRING,
+    rt_rw_k: DataTypes.STRING,
+    hiburan: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Keramaian',
