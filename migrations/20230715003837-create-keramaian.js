@@ -18,6 +18,15 @@ module.exports = {
       banyak_undangan: {
         type: Sequelize.INTEGER
       },
+      tempat_acara: {
+        type: Sequelize.STRING
+      },
+      rt_rw_k: {
+        type: Sequelize.STRING
+      },
+      hiburan: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
