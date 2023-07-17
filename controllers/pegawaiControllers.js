@@ -1,15 +1,5 @@
 const { Pegawai } = require('../models')
 
-const viewPegawai = async (req, res) => {
-    try {
-        const data = await Pegawai.findAll()
-        const apiUrl = process.env.APP_API_URL;
-        res.render('pegawai', {pegawais: data, apiUrl: apiUrl})
-    } catch (error) {
-        console.log(error, '<-- error view pegawai')
-    }
-}
-
 const getAllPegawai = async (req, res) => {
     try {
         const data = await Pegawai.findAll()
@@ -84,4 +74,4 @@ const deletePegawai = async (req, res) => {
     }
 }
 
-module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai, viewPegawai }
+module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai }
