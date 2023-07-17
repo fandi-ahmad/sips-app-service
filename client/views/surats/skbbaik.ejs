@@ -1,0 +1,174 @@
+<%- include('../../components/base/head') %>
+<body>
+
+<%- include('../../components/navbar') %>
+<%- include('../../components/sidebar') %>
+<%- include('../../components/titleBar', {title: 'Surat Keterangan Berkelakuan Baik', btnText: 'buat baru'}) %>
+
+<section class="section main-section">
+  <div class="card has-table">
+    <%- include('../../components/cardHead', {title: 'Daftar Surat'}) %>
+    <div class="card-content">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>No Surat</th>
+            <th>Nama Warga</th>
+            <th>RT/RW</th>
+            <th>Alamat</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% dataSurat.forEach((surat, index) => { %>
+            <tr>
+              <td class="image-cell"><%= index + 1 %></td>
+              <td data-label="No Surat"><%= surat.no_surat %></td>
+              <td data-label="Nama Warga"><%= surat.warga.nama %></td>
+              <td data-label="Rt/RW"><%= surat.warga.rt_rw %></td>
+              <td data-label="Alamat"><%= surat.warga.alamat %></td>
+              <td class="actions-cell">
+                <div class="buttons right nowrap">
+                  <button id="editButton" class="button small blue --jb-modal"  data-target="edit" type="button"
+                    data-id="<%= surat.id %>"
+                  >
+                    <span class="icon"><i class="mdi mdi-pen"></i></span>
+                 </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="table-pagination">
+        <div class="flex items-center justify-between">
+          <div class="buttons">
+            <button type="button" class="button active">1</button>
+            <button type="button" class="button">2</button>
+            <button type="button" class="button">3</button>
+          </div>
+          <small>Page 1 of 3</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="create-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card w-4/5" style="min-height: 85vh;">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create Surat</p>
+      </header>
+      <section class="modal-card-body">
+
+        <!-- WARGA -->
+        <div class="field" id="createWargaForm">
+          <label><b>Data Warga</b></label>
+          <div class="field-body grid grid-rows-5 grid-flow-col gap-4">
+            <%- include('../../components/baseInput', {label: 'nama', id: 'nama'}) %>
+            <%- include('../../components/baseInput', {label: 'nik', id: 'nik'}) %>
+            <%- include('../../components/baseInput', {label: 'jenis kelamin', id: 'jenis_kelamin'}) %>
+            <%- include('../../components/baseInput', {label: 'tempat lahir', id: 'tempat_lahir'}) %>
+            <%- include('../../components/baseInput', {label: 'tanggal lahir', id: 'tanggal_lahir', type: 'date'}) %>
+            <%- include('../../components/baseInput', {label: 'pekerjaan', id: 'pekerjaan'}) %>
+            <%- include('../../components/baseInput', {label: 'kewarganegaraan', id: 'kewarganegaraan'}) %>
+            <%- include('../../components/baseInput', {label: 'status', id: 'status'}) %>
+            <%- include('../../components/baseInput', {label: 'agama', id: 'agama'}) %>
+            <%- include('../../components/baseInput', {label: 'alamat', id: 'alamat'}) %>
+            <%- include('../../components/baseInput', {label: 'rt/rw', id: 'rt_rw'}) %>
+            <%- include('../../components/baseInput', {label: 'no surat', id: 'no_surat'}) %>
+            <%- include('../../components/baseInput', {label: 'maksud', id: 'maksud'}) %>
+          </div>
+        </div>
+
+       
+
+        <div class="flex justify-end">
+          <div class="control">
+            <div class="button red --jb-modal-close" id="btnCancel">Cancel</div>
+            <div onclick="backtoWarga()" class="button bg-gray-500 hover:bg-gray-600 text-white border-0 hidden" id="btnBackToWarga">Back to warga</div>
+          </div>
+          <div class="control ml-4">
+            <div onclick="createSuratForm()" class="button blue" id="btnCreateSurat">create surat</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+    
+</section>
+    
+</body>
+</html>
+<%- include('../../components/base/footer') %>
+<script>
+
+  const apiUrl = '<%= apiUrl %>';
+
+  // btn create
+  const createSuratForm = async () => {
+    let nama = ref('nama').value
+    let nik = ref('nik').value
+    let jenis_kelamin = ref('jenis_kelamin').value
+    let tempat_lahir = ref('tempat_lahir').value
+    let tanggal_lahir = ref('tanggal_lahir').value
+    let pekerjaan = ref('pekerjaan').value
+    let kewarganegaraan = ref('kewarganegaraan').value
+    let status = ref('status').value
+    let agama = ref('agama').value
+    let alamat = ref('alamat').value
+    let rt_rw = ref('rt_rw').value
+
+    let no_surat = ref('no_surat').value
+    let no_surat_number = parseInt(no_surat)
+
+    if (nama == '' && nik == '' && jenis_kelamin == '' && tempat_lahir == '' && tanggal_lahir == '' && 
+        pekerjaan == '' && kewarganegaraan == '' && status == '' && agama == '' && alamat == '' && rt_rw == ''
+    ) {
+      alert('input tidak boleh kosong')
+    } else {
+      createSuratApi(nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan, status, agama, alamat, rt_rw, no_surat_number)
+    }
+  }
+
+  const createSuratApi = async (nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan, status, agama, alamat, rt_rw, no_surat_number) => {
+    try {
+      const response = await fetch(`${apiUrl}/surat/type`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getItem('accessToken')}`
+        },
+        body: JSON.stringify({ 
+          nama: nama,
+          nik: nik,
+          jenis_kelamin: jenis_kelamin,
+          tempat_lahir: tempat_lahir,
+          tanggal_lahir: tanggal_lahir,
+          pekerjaan: pekerjaan,
+          kewarganegaraan: kewarganegaraan,
+          status: status,
+          agama: agama,
+          alamat: alamat,
+          rt_rw: rt_rw,
+
+          nama_surat: 'surat keterangan berkelakuan baik',
+          no_surat: `${no_surat_number}/50/bcn/2023`,
+          no_surat_number: no_surat_number,
+          maksud: "bantuan",
+
+          id_pegawai: 1
+        })
+      });
+      const data = await response.json()
+      location.reload()
+      console.log(data, '<-- data resonse create')
+      alert('create surat successfully')
+    } catch (error) {
+      alert('ups, something wrong!')
+      console.log('Error:', error);
+    }
+  };
+
+</script>

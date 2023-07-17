@@ -2,8 +2,8 @@ const router = require("express").Router()
 const pegawaiRouter = require('./pegawaiRouter')
 const wargaRouter = require('./wargaRouter')
 const userRouter = require('./userRouter')
-const { getAllPegawai, viewPegawai } = require('../controllers/pegawaiControllers')
-const { getAllWarga } = require('../controllers/wargaControllers')
+// const { getAllPegawai } = require('../controllers/pegawaiControllers')
+// const { getAllWarga } = require('../controllers/wargaControllers')
 const { getAllSurat, createSurat, updateSurat } = require('../controllers/suratControllers')
 const { viewLogin } = require('../controllers/authControllers')
 const { verifyToken } = require('../middleware/VerifyToken')
@@ -13,6 +13,9 @@ const kelBaikRouter = require('./surats/kelBaikRouter')
 const ketUsahaRouter = require('./surats/ketUsahaRouter')
 const ketRumah = require('./surats/ketRumah')
 const suratByTYpe = require('./surats/suratByTypeRoute')
+
+// ===== VIEWS ROUTER =====
+const { viewPegawai, viewWarga, viewSuratBaik, viewSuratUsaha } = require('../controllers/viewControllers')
 
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)
@@ -27,8 +30,14 @@ router.get('/', (req, res) => {
     res.render('dashboard')
 })
 router.get('/pegawai', viewPegawai)
-router.get('/warga', getAllWarga)
+router.get('/warga', viewWarga)
 router.get('/login', viewLogin)
+
+// surat
+router.get('/surat/berkelakuan-baik', viewSuratBaik)
+// router.get('/surat/name=surat%20keterangan%20belum%20memiliki%20rumah', viewSuratBaik)
+router.get('/surat/usaha', viewSuratUsaha)
+// type?name=surat%20keterangan%20belum%20memiliki%20rumah
 
 router.get('/surat', getAllSurat)
 router.post('/api/v1/surat', createSurat)

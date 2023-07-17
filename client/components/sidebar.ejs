@@ -26,6 +26,40 @@
             <span class="menu-item-label">Surat</span>
           </a>
         </li>
+        <li class="" id="dropdownMenu">
+          <a class="dropdown">
+            <span class="icon"><i class="mdi mdi-view-list"></i></span>
+            <span class="menu-item-label">Surat</span>
+            <span class="icon"><i class="mdi mdi-plus" id="iconDropdown"></i></span>
+          </a>
+          <ul>
+            <li class="bg-gray-800" id="berkelakuan-baik">
+              <a href="/surat/berkelakuan-baik">
+                <span>S. K. Berkelakuan Baik</span>
+              </a>
+            </li>
+            <li class="bg-gray-800" id="usaha">
+              <a href="/surat/usaha">
+                <span>S. K. Usaha</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/domisili-usaha">
+                <span>S. K. Domisili Usaha</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/rumah">
+                <span>S. K. Belum Memiliki Rumah</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/sktm">
+                <span>S. K. Tidak Mampu (SKTM)</span>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
 
@@ -55,6 +89,28 @@ const checkActivePage = () => {
   }
 }
 
+const checkDropDownMenu = () => {
+  const iconDropdown = () => {
+    getId('dropdownMenu').classList.add('active')
+    getId('iconDropdown').classList.remove('mdi-plus')
+    getId('iconDropdown').classList.add('mdi-minus')
+  }
+
+  const activeMenu = (idMenu) => {
+    getId(idMenu).classList.add('bg-gray-700')
+    getId(idMenu).classList.remove('bg-gray-800')
+  }
+  
+  if (pathname == '/surat/berkelakuan-baik') {
+    activeMenu('berkelakuan-baik')
+    iconDropdown()
+  } else if (pathname == '/surat/usaha') {
+    activeMenu('usaha')
+    iconDropdown()
+  }
+  
+}
+
 const logoutUser = () => {
   localStorage.removeItem('accessToken')
   window.location.href = '/login'
@@ -78,6 +134,7 @@ const checkToken = async () => {
 
 const mounted = () => {
   checkActivePage()
+  checkDropDownMenu()
   checkToken()
 }
 mounted()
