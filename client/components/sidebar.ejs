@@ -4,28 +4,71 @@
       Admin <b class="font-black">One</b>
     </div>
   </div>
-  <div class="menu is-menu-main">
-    <p class="menu-label">General</p>
-    <ul class="menu-list">
-      <li class="" id="dashboard">
-        <a href="/">
-          <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-          <span class="menu-item-label">Dashboard</span>
-        </a>
-      </li>
-      <li class="" id="pegawai">
-        <a href="/pegawai">
-          <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-          <span class="menu-item-label">Pegawai</span>
-        </a>
-      </li>
-      <li class="" id="surat">
-        <a href="/surat">
-          <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
-          <span class="menu-item-label">Surat</span>
-        </a>
-      </li>
-    </ul>
+  <div class="menu is-menu-main flex justify-between" style="flex-direction: column; height: 90vh;">
+    <div style="align-items: flex-start;">
+      <p class="menu-label">General</p>
+      <ul class="menu-list">
+        <li class="" id="dashboard">
+          <a href="/">
+            <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+            <span class="menu-item-label">Dashboard</span>
+          </a>
+        </li>
+        <li class="" id="pegawai">
+          <a href="/pegawai">
+            <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+            <span class="menu-item-label">Pegawai</span>
+          </a>
+        </li>
+        <li class="" id="surat">
+          <a href="/surat">
+            <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+            <span class="menu-item-label">Surat</span>
+          </a>
+        </li>
+        <li class="" id="dropdownMenu">
+          <a class="dropdown">
+            <span class="icon"><i class="mdi mdi-view-list"></i></span>
+            <span class="menu-item-label">Surat</span>
+            <span class="icon"><i class="mdi mdi-plus" id="iconDropdown"></i></span>
+          </a>
+          <ul>
+            <li class="bg-gray-800" id="berkelakuan-baik">
+              <a href="/surat/berkelakuan-baik">
+                <span>S. K. Berkelakuan Baik</span>
+              </a>
+            </li>
+            <li class="bg-gray-800" id="usaha">
+              <a href="/surat/usaha">
+                <span>S. K. Usaha</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/domisili-usaha">
+                <span>S. K. Domisili Usaha</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/rumah">
+                <span>S. K. Belum Memiliki Rumah</span>
+              </a>
+            </li>
+            <li class="bg-gray-800">
+              <a href="/surat/sktm">
+                <span>S. K. Tidak Mampu (SKTM)</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex justify-center mt-10" style="align-items: flex-end;">
+      <button onclick="logoutUser()" class="button bg-gray-600 hover:bg-gray-700 text-white border-0" data-target="create-modal" type="button">
+        <span class="icon"><i class="mdi mdi-logout"></i></span>
+        <span>Logout</span>
+      </button>
+    </div>
   </div>
 </aside>
 
@@ -46,8 +89,53 @@ const checkActivePage = () => {
   }
 }
 
+const checkDropDownMenu = () => {
+  const iconDropdown = () => {
+    getId('dropdownMenu').classList.add('active')
+    getId('iconDropdown').classList.remove('mdi-plus')
+    getId('iconDropdown').classList.add('mdi-minus')
+  }
+
+  const activeMenu = (idMenu) => {
+    getId(idMenu).classList.add('bg-gray-700')
+    getId(idMenu).classList.remove('bg-gray-800')
+  }
+  
+  if (pathname == '/surat/berkelakuan-baik') {
+    activeMenu('berkelakuan-baik')
+    iconDropdown()
+  } else if (pathname == '/surat/usaha') {
+    activeMenu('usaha')
+    iconDropdown()
+  }
+  
+}
+
+const logoutUser = () => {
+  localStorage.removeItem('accessToken')
+  window.location.href = '/login'
+}
+
+const checkToken = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/v1/pegawai`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    const data = await response.json();
+  } catch (error) {
+    window.location.href = '/login'
+  }
+};
+
+
 const mounted = () => {
   checkActivePage()
+  checkDropDownMenu()
+  checkToken()
 }
 mounted()
 

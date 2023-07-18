@@ -11,7 +11,13 @@ module.exports = {
       },
       no_surat: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING
+      },
+      no_surat_number: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER
       },
       nama_surat: {
         allowNull: false,
@@ -19,6 +25,15 @@ module.exports = {
       },
       maksud: {
         type: Sequelize.STRING
+      },
+      isi_surat: {
+        type: Sequelize.TEXT
+      },
+      no_surat_pengantar: {
+        type: Sequelize.STRING
+      },
+      tgl_surat_pengantar: {
+        type: Sequelize.DATE
       },
       id_pegawai: {
         allowNull: false,
@@ -41,7 +56,7 @@ module.exports = {
         onDelete: 'RESTRICT'
       },
       id_warga_pelapor: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
         references: {
           model: 'Warga_pelapors',
@@ -49,6 +64,17 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
+      },
+      id_surat_khusus: {
+        // allowNull: false,
+        unique: true,
+        type: Sequelize.INTEGER,
+        // references: {
+        //   model: 'Surat_khusus',
+        //   key: 'id'
+        // },
+        // onUpdate: 'CASCADE',
+        // onDelete: 'RESTRICT'
       },
       createdAt: {
         allowNull: false,

@@ -1,0 +1,360 @@
+<%- include('../../components/base/head') %>
+<body>
+
+<%- include('../../components/navbar') %>
+<%- include('../../components/sidebar') %>
+<%- include('../../components/titleBar', {title: 'Surat Keterangan Berkelakuan Baik', btnText: 'buat baru'}) %>
+
+<section class="section main-section">
+  <div class="card has-table">
+    <%- include('../../components/cardHead', {title: 'Daftar Surat'}) %>
+    <div class="card-content">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>No Surat</th>
+            <th>Nama Warga</th>
+            <th>RT/RW</th>
+            <th>Alamat</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% dataSurat.forEach((surat, index) => { %>
+            <tr>
+              <td class="image-cell"><%= index + 1 %></td>
+              <td data-label="No Surat"><%= surat.no_surat %></td>
+              <td data-label="Nama Warga"><%= surat.warga.nama %></td>
+              <td data-label="Rt/RW"><%= surat.warga.rt_rw %></td>
+              <td data-label="Alamat"><%= surat.warga.alamat %></td>
+              <td class="actions-cell">
+                <div class="buttons right nowrap">
+                  <button id="editButton" class="button small text-white border-0 hover:border-0 bg-blue-500 hover:bg-blue-600 --jb-modal"  data-target="edit" type="button"
+                    data-id="<%= surat.id %>"
+                  >
+                    <span class="icon"><i class="mdi mdi-pen"></i></span>
+                 </button>
+                 <button data-target="print-modal" class="button small text-white border-0 hover:border-0 bg-yellow-500 hover:bg-yellow-600 --jb-modal">
+                  <span class="icon"><i class="mdi mdi-eye"></i></span>
+                 </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="table-pagination">
+        <div class="flex items-center justify-between">
+          <div class="buttons">
+            <button type="button" class="button active">1</button>
+            <button type="button" class="button">2</button>
+            <button type="button" class="button">3</button>
+          </div>
+          <small>Page 1 of 3</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="create-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card w-4/5" style="min-height: 85vh;">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Create Surat</p>
+      </header>
+      <section class="modal-card-body">
+
+        <!-- WARGA -->
+        <div class="field" id="createWargaForm">
+          <label><b>Data Warga</b></label>
+          <div class="field-body grid grid-rows-5 grid-flow-col gap-4">
+            <%- include('../../components/baseInput', {label: 'nama', id: 'nama'}) %>
+            <%- include('../../components/baseInput', {label: 'nik', id: 'nik', pattern: '[0-9]*'}) %>
+            <%- include('../../components/baseInput', {label: 'jenis kelamin', id: 'jenis_kelamin'}) %>
+            <%- include('../../components/baseInput', {label: 'tempat lahir', id: 'tempat_lahir'}) %>
+            <%- include('../../components/baseInput', {label: 'tanggal lahir', id: 'tanggal_lahir', type: 'date'}) %>
+            <%- include('../../components/baseInput', {label: 'pekerjaan', id: 'pekerjaan'}) %>
+            <%- include('../../components/baseInput', {label: 'kewarganegaraan', id: 'kewarganegaraan'}) %>
+            <%- include('../../components/baseInput', {label: 'status', id: 'status'}) %>
+            <%- include('../../components/baseInput', {label: 'agama', id: 'agama'}) %>
+            <%- include('../../components/baseInput', {label: 'alamat', id: 'alamat'}) %>
+            <%- include('../../components/baseInput', {label: 'rt/rw', id: 'rt_rw'}) %>
+            <%- include('../../components/baseInput', {label: 'no surat', id: 'no_surat'}) %>
+            <%- include('../../components/baseInput', {label: 'maksud', id: 'maksud'}) %>
+          </div>
+        </div>
+
+       
+
+        <div class="flex justify-end">
+          <div class="control">
+            <div class="button red --jb-modal-close" id="btnCancel">Cancel</div>
+            <div onclick="backtoWarga()" class="button bg-gray-500 hover:bg-gray-600 text-white border-0 hidden" id="btnBackToWarga">Back to warga</div>
+          </div>
+          <div class="control ml-4">
+            <div onclick="createSuratForm()" class="button blue" id="btnCreateSurat">create surat</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+    
+</section>
+
+<div id="print-modal" class="modal">
+  <div class="modal-background --jb-modal-close"></div>
+  <div class="modal-card w-11/12 min-h-screen">
+    <section class="modal-card-body">
+      <p class="modal-card-title">Print</p>
+      <button onclick="printArea('printArea')" class="button blue">print</button>
+
+      <div id="printArea">
+        <div id="letterPreview" class="preview-print">
+          <div class="print-preview text-center text-tnr" style="width: 100%; height: fit-content; border: 1px solid black;">
+            <div class="flex flex-row gap-4 justify-center items-center">
+              <div style="width: 80px;">
+                <img src="../assets/images/lambang_kota_palu.png" alt="" style="width: 100%;">
+              </div>
+              <div>
+                <h1 class="text-xl leading-none font-medium">PEMERINTAH KOTA PALU</h1>
+                <P class="text-2xl leading-none" style="font-weight: 900;">KECAMATAN PALU BARAT</P>
+                <P class="text-2xl leading-none" style="font-weight: 900;">KELURAHAN BALAROA</P>
+                <P class="font-bold leading-none">JL. Yambaere No. 05</P>
+              </div>
+            </div>
+
+            <hr class="my-1" style="border: 1px solid black;">
+
+            <div class="mb-2">
+              <u><b>SURAT KETERANGAN BERKELAKUAN BAIK</b></u>
+              <p class="leading-none">NOMOR: 301/92.05/BLR/VII/2023</p>
+            </div>
+
+            <div class="my-table mb-2">
+              <div class="text-left">Yang bertanda tangan dibawah ini:</div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Nama</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Jabatan</div>
+                <div>: </div>
+              </div>
+            </div>
+
+            <div class="my-table mb-2">
+              <div class="text-left">Dengan ini menerangkan bahwa:</div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Nama</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Jenis kelamin</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Agama</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Pekerjaan</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Status Perkawinan</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Kewarganegaraan</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Alamat</div>
+                <div>: </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">RT/RW</div>
+                <div>: </div>
+              </div>
+            </div>
+
+            <p class="text-justify">
+              Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
+              keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
+              serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW Nomor:  
+              - /001-005/BLR/VI/2023, Tanggal 23 Juni  2023.
+            </p>
+           
+            <p class="text-justify indent-10">
+              Demikian Surat Keterangan ini dibuat untuk dipergunakan seperlunya.
+            </p>
+
+            <div class="flex justify-end">
+              <div class="ttd">
+                <div class="mb-20">
+                  <div class="my-4">Palu, 
+                    <span id="date"></span>
+                    <span id="month"></span>
+                    <span id="year"></span>
+                  </div>
+                  <div>An. LURAH BALAROA</div>
+                  <div>Kasi Pemberdayaan Masyarakat</div>
+                  <div>Dan Kesejahteraan Sosial</div>
+                </div>
+
+                <div class="text-md"><u>RAHMANSYAH. SH</u></div>
+                <div>NIP: xxxx xxxxx xxx</div>
+              </div>
+            </div>
+          
+          </div>
+
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <div class="control">
+          <div class="button red --jb-modal-close">Cancel</div>
+        </div>
+        <div class="control ml-4">
+          <div class="button blue">Next to wp</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+    
+</body>
+</html>
+<%- include('../../components/base/footer') %>
+<script>
+
+  const apiUrl = '<%= apiUrl %>';
+
+  let id, nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan,
+  statusWarga, agama, alamat, rt_rw, maksud, no_surat, no_surat_number
+
+  // btn create
+  const createSuratForm = async () => {
+    nama = ref('nama').value
+    nik = ref('nik').value
+    jenis_kelamin = ref('jenis_kelamin').value
+    tempat_lahir = ref('tempat_lahir').value
+    tanggal_lahir = ref('tanggal_lahir').value
+    pekerjaan = ref('pekerjaan').value
+    kewarganegaraan = ref('kewarganegaraan').value
+    statusWarga = ref('status').value
+    agama = ref('agama').value
+    alamat = ref('alamat').value
+    rt_rw = ref('rt_rw').value
+
+    maksud = ref('maksud').value
+    no_surat = ref('no_surat').value
+    no_surat_number = parseInt(no_surat)
+
+    if (nama == '' && nik == '' && jenis_kelamin == '' && tempat_lahir == '' && tanggal_lahir == '' && 
+        pekerjaan == '' && kewarganegaraan == '' && statusWarga == '' && agama == '' && alamat == '' && rt_rw == ''
+    ) {
+      alert('input tidak boleh kosong')
+    } else {
+      createSuratApi()
+    }
+  }
+
+  const createSuratApi = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/surat/type`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getItem('accessToken')}`
+        },
+        body: JSON.stringify({ 
+          nama: nama,
+          nik: nik,
+          jenis_kelamin: jenis_kelamin,
+          tempat_lahir: tempat_lahir,
+          tanggal_lahir: tanggal_lahir,
+          pekerjaan: pekerjaan,
+          kewarganegaraan: kewarganegaraan,
+          status: statusWarga,
+          agama: agama,
+          alamat: alamat,
+          rt_rw: rt_rw,
+
+          nama_surat: 'surat keterangan berkelakuan baik',
+          no_surat: `${no_surat_number}/50/bcn/2023`,
+          no_surat_number: no_surat_number,
+          maksud: maksud,
+
+          id_pegawai: 1
+        })
+      });
+      const data = await response.json()
+      location.reload()
+      console.log(data, '<-- data resonse create')
+      alert('create surat successfully')
+    } catch (error) {
+      alert('ups, something wrong!')
+      console.log('Error:', error);
+    }
+  };
+
+  const editButtons = document.querySelectorAll('.button[data-target="edit"]');
+  // const deleteButtons = document.querySelectorAll('.button[data-target="delete"]');
+
+  const editNip = ref('editNip')
+
+   // get id for edit
+   editButtons.forEach((button) => {
+     button.addEventListener('click', function() {
+      console.log('test')
+      // const data = this.dataset
+      // editId.value = data.id
+      // editNama.value = data.nama
+      // editJabatan.value = data.jabatan
+      // editNip.value = data.nip
+    });
+  });
+
+  // Membuat objek Date baru
+var today = new Date();
+
+// Mendapatkan tanggal, bulan, dan tahun
+var date = today.getDate();
+var month = today.getMonth();
+var year = today.getFullYear();
+
+// Array yang berisi nama bulan
+var monthNames = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember"
+];
+
+// Mengambil nama bulan dari array berdasarkan indeks bulan
+var monthName = monthNames[month];
+
+// Menampilkan tanggal, nama bulan, dan tahun
+console.log("Tanggal saat ini: " + date);
+console.log("Bulan saat ini: " + monthName);
+console.log("Tahun saat ini: " + year);
+document.getElementById("date").innerHTML = date;
+document.getElementById("month").innerHTML = monthName;
+document.getElementById("year").innerHTML = year;
+
+</script>
