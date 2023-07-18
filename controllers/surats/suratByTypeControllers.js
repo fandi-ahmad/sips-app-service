@@ -5,8 +5,8 @@
 
 const { Surat, sequelize, Warga } = require('../../models')
 
-const getSuratQuery = async (name) => {
-    const dataSurat = await sequelize.query( /*sql*/ `
+const getSuratQuery = async (name, id) => {
+    let query = /*sql*/ `
         SELECT 
             surats.id, surats.no_surat, surats.nama_surat, surats.maksud,
             surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
@@ -21,7 +21,13 @@ const getSuratQuery = async (name) => {
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
         WHERE surats.nama_surat = "${name}"
-    `)
+    `;
+
+    if (id) {
+        query += ` AND surats.id = "${id}"`;
+    }
+
+    const dataSurat = await sequelize.query(query)
 
     const formattedData = dataSurat[0].map((item) => {
         return {
@@ -60,9 +66,10 @@ const getSuratQuery = async (name) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name } = req.query
-        // const name = 'surat keterangan usaha'
-        const dataSurat = await getSuratQuery(name)
+        const { name, id } = req.query
+        // console.log(typeof(id), id, '<-- id untuk surat')
+        
+        const dataSurat = await getSuratQuery(name, id)
 
         res.json({ status: 'ok', nama_surat: name, data: dataSurat })
     } catch (error) {
