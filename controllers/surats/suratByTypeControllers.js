@@ -117,7 +117,10 @@ const createSuratByType = async (req, res) => {
         res.json({ status: 'ok', message: 'created successfully' })
 
     } catch (error) {
-        
+        res.json({
+            status: 'failed',
+            message: 'nomor surat sudah terdaftar'
+        })
     }
 }
 

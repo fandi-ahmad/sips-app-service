@@ -1,14 +1,49 @@
+const { Op } = require('sequelize')
 const { Warga, Warga_pelapor } = require('../models')
 
 const getAllWarga = async (req, res) => {
     try {
-        const data = await Warga.findAll()
-        const result = {
-            status: 'ok',
-            data: data
+        const { nik } = req.query
+        const currentPage = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+        
+        if (nik) {
+            const { count, rows } = await Warga.findAndCountAll({ 
+                where: { 
+                    nik: {
+                        [Op.like]: `%${nik}%`
+                    }
+                },
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+
+        } else {
+            const { count, rows } = await Warga.findAndCountAll({ 
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
         }
-        // res.json(result)
-        res.render('warga', {status: 'okey'})
     } catch (error) {
         // res.status(400)
         console.log(error, '<-- error get all warga')
