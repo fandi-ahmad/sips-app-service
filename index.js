@@ -4,7 +4,9 @@ const port = () => { return process.env.APP_PORT }
 const router = require('./routes/router')
 const BodyParser = require("body-parser")
 const { config } = require('dotenv')
+const cors = require('cors')
 
+app.use(cors())
 config()
 app.use(BodyParser.urlencoded({ extended: true }))
 app.use(express.static('client'));

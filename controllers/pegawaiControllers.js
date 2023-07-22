@@ -55,7 +55,7 @@ const updatePegawai = async (req, res) => {
 
 const deletePegawai = async (req, res) => {
     try {
-        const { id } = req.body
+        const { id } = req.params
         const pegawai = await Pegawai.findByPk(id)
         if (!pegawai) {
             return res.status(404).json({

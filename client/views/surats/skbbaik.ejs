@@ -35,7 +35,9 @@
                   >
                     <span class="icon"><i class="mdi mdi-pen"></i></span>
                  </button>
-                 <button data-target="print-modal" class="button small text-white border-0 hover:border-0 bg-yellow-500 hover:bg-yellow-600 --jb-modal">
+                 <button id="printButton" data-target="print-modal" class="button small text-white border-0 hover:border-0 bg-yellow-500 hover:bg-yellow-600 --jb-modal" type="button"
+                  data-id="<%= surat.id %>"
+                 >
                   <span class="icon"><i class="mdi mdi-eye"></i></span>
                  </button>
                 </div>
@@ -102,6 +104,7 @@
     
 </section>
 
+
 <div id="print-modal" class="modal">
   <div class="modal-background --jb-modal-close"></div>
   <div class="modal-card w-11/12 min-h-screen">
@@ -128,18 +131,18 @@
 
             <div class="mb-2">
               <u><b>SURAT KETERANGAN BERKELAKUAN BAIK</b></u>
-              <p class="leading-none">NOMOR: 301/92.05/BLR/VII/2023</p>
+              <p class="leading-none">NOMOR: <span id="noSurat"></span></p>
             </div>
 
             <div class="my-table mb-2">
               <div class="text-left">Yang bertanda tangan dibawah ini:</div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Nama</div>
-                <div>: </div>
+                <div>: <span id="namaPegawai"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Jabatan</div>
-                <div>: </div>
+                <div>: <span id="jabatanPegawai"></span> </div>
               </div>
             </div>
 
@@ -147,39 +150,47 @@
               <div class="text-left">Dengan ini menerangkan bahwa:</div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Nama</div>
-                <div>: </div>
+                <div>: <span id="namaWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Jenis kelamin</div>
-                <div>: </div>
+                <div>: <span id="jkWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Tempat/Tgl. lahir</div>
-                <div>: </div>
-              </div>
-              <div class="flex flex-row">
-                <div class="w-60 ml-10 text-left">Agama</div>
-                <div>: </div>
+                <div>: <span id="ttlWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Pekerjaan</div>
-                <div>: </div>
-              </div>
-              <div class="flex flex-row">
-                <div class="w-60 ml-10 text-left">Status Perkawinan</div>
-                <div>: </div>
+                <div>: <span id="pekerjaanWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Kewarganegaraan</div>
-                <div>: </div>
+                <div>: <span id="negaraWarga"></span></div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Status</div>
+                <div>: <span id="statusWarga"></span></div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Agama</div>
+                <div>: <span id="agamaWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">Alamat</div>
-                <div>: </div>
+                <div>: <span id="alamatWarga"></span></div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">NIK</div>
+                <div>: <span id="nikWarga"></span></div>
               </div>
               <div class="flex flex-row">
                 <div class="w-60 ml-10 text-left">RT/RW</div>
-                <div>: </div>
+                <div>: <span id="rtRwWarga"></span></div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-60 ml-10 text-left">Maksud</div>
+                <div>: <span id="maksudSurat"></span></div>
               </div>
             </div>
 
@@ -187,7 +198,7 @@
               Sepanjang pengamatan kami serta pengetahuan kami, hingga saat ini dikeluarkan surat 
               keterangan ini, Oknum tersebut belum pernah tersangkut dalam perkara pidana kriminal, 
               serta berkelakuan baik terhadap masyarakat sesuai dengan Surat Pengantar RT/RW Nomor:  
-              - /001-005/BLR/VI/2023, Tanggal 23 Juni  2023.
+              <span id="isiNoSurat"></span>, Tanggal <span id="tglIsiSurat"></span>.
             </p>
            
             <p class="text-justify indent-10">
@@ -203,12 +214,12 @@
                     <span id="year"></span>
                   </div>
                   <div>An. LURAH BALAROA</div>
-                  <div>Kasi Pemberdayaan Masyarakat</div>
-                  <div>Dan Kesejahteraan Sosial</div>
+                  <div id="jabatanPegawaiTtd">Kasi Pemberdayaan Masyarakat</div>
+                  <!-- <div>Dan Kesejahteraan Sosial</div> -->
                 </div>
 
-                <div class="text-md"><u>RAHMANSYAH. SH</u></div>
-                <div>NIP: xxxx xxxxx xxx</div>
+                <div class="text-md"><u id="namaPegawaiTtd" class="uppercase"></u></div>
+                <div>NIP: <span id="nipPegawaiTtd"></span></div>
               </div>
             </div>
           
@@ -305,56 +316,87 @@
     }
   };
 
+  // Membuat objek Date baru
+  var today = new Date();
+
+  // Mendapatkan tanggal, bulan, dan tahun
+  var date = today.getDate();
+  var month = today.getMonth();
+  var year = today.getFullYear();
+
+  // Array yang berisi nama bulan
+  var monthNames = [ "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  var monthRomawis = [ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII" ];
+
+  // Mengambil nama bulan dari array berdasarkan indeks bulan
+  var monthName = monthNames[month];
+  var monthRomawi = monthRomawis[month]
+
+  // Menampilkan tanggal, nama bulan, dan tahun
+  document.getElementById("date").innerHTML = date;
+  document.getElementById("month").innerHTML = monthName;
+  document.getElementById("year").innerHTML = year;
+
   const editButtons = document.querySelectorAll('.button[data-target="edit"]');
-  // const deleteButtons = document.querySelectorAll('.button[data-target="delete"]');
+  const printButtons = document.querySelectorAll('.button[data-target="print-modal"]');
 
-  const editNip = ref('editNip')
-
-   // get id for edit
-   editButtons.forEach((button) => {
-     button.addEventListener('click', function() {
-      console.log('test')
-      // const data = this.dataset
+  editButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+      const data = this.dataset
       // editId.value = data.id
-      // editNama.value = data.nama
-      // editJabatan.value = data.jabatan
-      // editNip.value = data.nip
+      getDataSuratById(data.id)
     });
   });
 
-  // Membuat objek Date baru
-var today = new Date();
+  printButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+      const data = this.dataset
+      getDataSuratById(data.id)
+    })
+  })
 
-// Mendapatkan tanggal, bulan, dan tahun
-var date = today.getDate();
-var month = today.getMonth();
-var year = today.getFullYear();
+  const getDataSuratById = async (id) => {
+    try {
+      const suratName = 'surat keterangan berkelakuan baik'
+      const api = await fetch(`${apiUrl}/surat/type?id=${id}&name=${suratName}`)
+      const response = await api.json()
+      data = response.data[0]
 
-// Array yang berisi nama bulan
-var monthNames = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember"
-];
+      ref('noSurat').innerText = `301/${data.no_surat}/BLR/${monthRomawi}/${year}`
 
-// Mengambil nama bulan dari array berdasarkan indeks bulan
-var monthName = monthNames[month];
+      ref('namaPegawai').innerText = data.pegawai.nama
+      ref('jabatanPegawai').innerText = data.pegawai.jabatan
 
-// Menampilkan tanggal, nama bulan, dan tahun
-console.log("Tanggal saat ini: " + date);
-console.log("Bulan saat ini: " + monthName);
-console.log("Tahun saat ini: " + year);
-document.getElementById("date").innerHTML = date;
-document.getElementById("month").innerHTML = monthName;
-document.getElementById("year").innerHTML = year;
+      const warga = data.warga
+
+      ref('namaWarga').innerText = warga.nama
+      ref('jkWarga').innerText = warga.jenis_kelamin == 'l' ? 'laki-laki' : 'perempuan'
+      ref('ttlWarga').innerText = `${warga.tempat_lahir} ${warga.tanggal_lahir}`;
+      ref('pekerjaanWarga').innerText = warga.pekerjaan;
+      ref('negaraWarga').innerText = warga.kewarganegaraan
+      ref('statusWarga').innerText = warga.status
+      ref('agamaWarga').innerText = warga.agama
+      ref('alamatWarga').innerText = warga.alamat
+      ref('nikWarga').innerText = warga.nik
+      ref('rtRwWarga').innerText = warga.rt_rw
+      ref('maksudSurat').innerText = data.maksud
+
+      ref('isiNoSurat').innerText = `- /${data.no_surat}/BLR/${monthRomawi}/${year}`
+      ref('tglIsiSurat').innerText = `${date} ${monthName} ${year}`
+
+      ref('jabatanPegawaiTtd').innerText = data.pegawai.jabatan
+      ref('namaPegawaiTtd').innerText = data.pegawai.nama
+      ref('nipPegawaiTtd').innerText = data.pegawai.nip
+
+    } catch (error) {
+      console.log(error, '<-- error get surat')
+    }
+  }
+
+
+  
 
 </script>
