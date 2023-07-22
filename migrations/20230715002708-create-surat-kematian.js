@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       hari_tanggal: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       hubungan: {
         type: Sequelize.STRING

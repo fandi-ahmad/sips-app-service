@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Surat.init({
     no_surat: DataTypes.STRING,
-    no_surat_number: DataTypes.INTEGER,
+    no_surat_number: DataTypes.STRING,
     nama_surat: DataTypes.STRING,
     maksud: DataTypes.STRING,
     isi_surat: DataTypes.TEXT,
