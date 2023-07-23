@@ -2,11 +2,23 @@ const { Pegawai } = require('../models')
 
 const getAllPegawai = async (req, res) => {
     try {
-        const data = await Pegawai.findAll()
-        res.json({
-            status: 'ok',
-            data: data
+        const currentPage = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+
+        const { count, rows } = await Pegawai.findAndCountAll({
+            offset: (currentPage - 1) * limit,
+            limit: limit
         })
+
+        const result = {
+            status: 'ok',
+            page: currentPage,
+            limit: limit,
+            total_page: Math.ceil(count/limit),
+            total_data: count,
+            data: rows,
+        }
+        res.json(result)
         // res.render('pegawai', {pegawais: data})
     } catch (error) {
         // res.status(400)
@@ -55,7 +67,7 @@ const updatePegawai = async (req, res) => {
 
 const deletePegawai = async (req, res) => {
     try {
-        const { id } = req.body
+        const { id } = req.params
         const pegawai = await Pegawai.findByPk(id)
         if (!pegawai) {
             return res.status(404).json({

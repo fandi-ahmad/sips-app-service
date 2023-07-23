@@ -17,7 +17,7 @@ module.exports = {
       no_surat_number: {
         allowNull: false,
         unique: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       nama_surat: {
         allowNull: false,
@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       tgl_surat_pengantar: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       id_pegawai: {
         allowNull: false,

@@ -8,7 +8,7 @@ const { Surat, sequelize, Warga } = require('../../models')
 const getSuratQuery = async (name, id) => {
     let query = /*sql*/ `
         SELECT 
-            surats.id, surats.no_surat, surats.nama_surat, surats.maksud,
+            surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
             surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
             surats.no_surat_pengantar, surats.tgl_surat_pengantar,
 
@@ -33,6 +33,7 @@ const getSuratQuery = async (name, id) => {
         return {
             id: item.id,
             no_surat: item.no_surat,
+            no_surat_number: item.no_surat_number,
             maksud: item.maksud,
             isi_surat: item.isi_surat,
             no_surat_pengantar: item.no_surat_pengantar,
@@ -117,8 +118,62 @@ const createSuratByType = async (req, res) => {
         res.json({ status: 'ok', message: 'created successfully' })
 
     } catch (error) {
-        
+        res.json({
+            status: 'failed',
+            message: 'nomor surat sudah terdaftar'
+        })
     }
 }
 
-module.exports = { getAllSuratByType, createSuratByType, getSuratQuery }
+const updateSuratByType = async (req, res) => {
+    try {
+        const {
+            nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
+            kewarganegaraan, status, agama, alamat, rt_rw,
+
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
+            no_surat_pengantar, tgl_surat_pengantar, nama_surat, id
+
+        } = req.body
+
+        const surat = await Surat.findByPk(id)
+        const warga = await Warga.findByPk(surat.dataValues.id_warga)
+
+        // console.log(warga, '<-- data warga dari db');
+        console.log(surat.dataValues.id_warga, '<-- data surat dari db');
+        console.log(nama, '<-- request body');
+
+        warga.nama = nama
+        warga.nik = nik
+        warga.jenis_kelamin = jenis_kelamin
+        warga.tempat_lahir = tempat_lahir
+        warga.tanggal_lahir = tanggal_lahir
+        warga.pekerjaan = pekerjaan
+        warga.kewarganegaraan = kewarganegaraan
+        warga.status = status
+        warga.agama = agama
+        warga.alamat = alamat
+        warga.rt_rw = rt_rw
+
+        surat.no_surat = no_surat
+        surat.no_surat_number = no_surat_number
+        // surat.nama_surat = nama_surat
+        surat.id_pegawai = id_pegawai
+
+        warga.save()
+        surat.save()
+
+        res.json({
+            status: 'ok',
+            message: 'successfully'
+        })
+
+    } catch (error) {
+        res.json({
+            status: 400, message: 'failed'
+        })
+        console.log(error, '<-- error update surat');
+    }
+}
+
+module.exports = { getAllSuratByType, createSuratByType, updateSuratByType }
