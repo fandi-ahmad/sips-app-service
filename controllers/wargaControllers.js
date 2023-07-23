@@ -10,9 +10,10 @@ const getAllWarga = async (req, res) => {
         if (nik) {
             const { count, rows } = await Warga.findAndCountAll({ 
                 where: { 
-                    nik: {
-                        [Op.like]: `%${nik}%`
-                    }
+                    nik: nik
+                    // nik: {
+                    //     [Op.like]: `%${nik}%`
+                    // }
                 },
                 offset: (currentPage - 1) * limit,
                 limit: limit
