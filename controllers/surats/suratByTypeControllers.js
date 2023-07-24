@@ -3,6 +3,7 @@
 // surat keterangan belum bekerja
 // surat keterangan belum menikah
 
+const { Op } = require('sequelize');
 const { Surat, sequelize, Warga } = require('../../models')
 
 const getSuratQuery = async (name, id) => {
@@ -67,14 +68,23 @@ const getSuratQuery = async (name, id) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id } = req.query
+        const { name, id, id_warga } = req.query
         // console.log(typeof(id), id, '<-- id untuk surat')
         
-        const dataSurat = await getSuratQuery(name, id)
-
-        res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        if (id_warga) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    id_warga: id_warga
+                }
+            })
+            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        } else {
+            const dataSurat = await getSuratQuery(name, id)
+            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        }
     } catch (error) {
         res.json({ status: 'failed', message: 'data not found' })
+        console.log(error, '<-- error get surat');
     }
 }
 
@@ -89,31 +99,55 @@ const createSuratByType = async (req, res) => {
 
         } = req.body
 
-        const newWarga = await Warga.create({
-            nama: nama,
-            nik: nik,
-            jenis_kelamin: jenis_kelamin,
-            tempat_lahir: tempat_lahir,
-            tanggal_lahir: tanggal_lahir,
-            pekerjaan: pekerjaan,
-            kewarganegaraan: kewarganegaraan,
-            status: status,
-            agama: agama,
-            alamat: alamat,
-            rt_rw: rt_rw,
+        const wargaByNik = await Warga.findOne({
+            where: {
+                nik: nik
+            }
         })
 
-        const newSurat = await Surat.create({
-            no_surat: no_surat,
-            no_surat_number: no_surat_number,
-            nama_surat: nama_surat,
-            maksud: maksud,
-            isi_surat: isi_surat,
-            id_pegawai: id_pegawai,
-            id_warga: newWarga.id,
-            no_surat_pengantar: no_surat_pengantar,
-            tgl_surat_pengantar: tgl_surat_pengantar
-        })
+        if (wargaByNik) {
+            console.log(wargaByNik.dataValues.id, '<-- id dari nik warga sudah ada');
+            const newSurat = await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: wargaByNik.dataValues.id,
+                no_surat_pengantar: no_surat_pengantar,
+                tgl_surat_pengantar: tgl_surat_pengantar
+            })
+        } else {
+            console.log('nik warga belum ada, lanjutkan create surat');
+            
+            const newWarga = await Warga.create({
+                nama: nama,
+                nik: nik,
+                jenis_kelamin: jenis_kelamin,
+                tempat_lahir: tempat_lahir,
+                tanggal_lahir: tanggal_lahir,
+                pekerjaan: pekerjaan,
+                kewarganegaraan: kewarganegaraan,
+                status: status,
+                agama: agama,
+                alamat: alamat,
+                rt_rw: rt_rw,
+            })
+
+            const newSurat = await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: newWarga.id,
+                no_surat_pengantar: no_surat_pengantar,
+                tgl_surat_pengantar: tgl_surat_pengantar
+            })
+
+        }
 
         res.json({ status: 'ok', message: 'created successfully' })
 
@@ -122,6 +156,8 @@ const createSuratByType = async (req, res) => {
             status: 'failed',
             message: 'nomor surat sudah terdaftar'
         })
+
+        console.log(error, 'error create surat');
     }
 }
 
