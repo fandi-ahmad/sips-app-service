@@ -21,8 +21,12 @@ const getSuratQuery = async (name, id) => {
         FROM surats 
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
-        WHERE surats.nama_surat = "${name}"
     `;
+    // WHERE surats.nama_surat = "${name}"
+
+    if (name) {
+        query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+    }
 
     if (id) {
         query += ` AND surats.id = "${id}"`;
@@ -35,6 +39,7 @@ const getSuratQuery = async (name, id) => {
             id: item.id,
             no_surat: item.no_surat,
             no_surat_number: item.no_surat_number,
+            nama_surat: item.nama_surat,
             maksud: item.maksud,
             isi_surat: item.isi_surat,
             no_surat_pengantar: item.no_surat_pengantar,
@@ -69,9 +74,12 @@ const getSuratQuery = async (name, id) => {
 const getAllSuratByType = async (req, res) => {
     try {
         const { name, id, id_warga } = req.query
-        // console.log(typeof(id), id, '<-- id untuk surat')
         
-        if (id_warga) {
+        if (!name) {
+            // const dataSurat = await Surat.findAll()
+            const dataSurat = await getSuratQuery('', '')
+            res.json({ status: 'ok', data: dataSurat })
+        } else if (id_warga) {
             const dataSurat = await Surat.findOne({
                 where: {
                     id_warga: id_warga
@@ -106,7 +114,6 @@ const createSuratByType = async (req, res) => {
         })
 
         if (wargaByNik) {
-            console.log(wargaByNik.dataValues.id, '<-- id dari nik warga sudah ada');
             const newSurat = await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
@@ -119,8 +126,6 @@ const createSuratByType = async (req, res) => {
                 tgl_surat_pengantar: tgl_surat_pengantar
             })
         } else {
-            console.log('nik warga belum ada, lanjutkan create surat');
-            
             const newWarga = await Warga.create({
                 nama: nama,
                 nik: nik,
