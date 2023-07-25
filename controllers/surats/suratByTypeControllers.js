@@ -73,10 +73,20 @@ const getSuratQuery = async (name, id) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id, id_warga } = req.query
+        const { name, id, id_warga, no_surat } = req.query
         
-        if (!name) {
-            // const dataSurat = await Surat.findAll()
+        if (no_surat) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    no_surat: no_surat
+                }
+            })
+            if (dataSurat === null) {
+                res.status(404).json({ message: 'id surat belum terdaftar' })
+            } else {
+                res.json({ status: 'ok', data: dataSurat })
+            }
+        } else if (!name) {
             const dataSurat = await getSuratQuery('', '')
             res.json({ status: 'ok', data: dataSurat })
         } else if (id_warga) {
@@ -91,8 +101,7 @@ const getAllSuratByType = async (req, res) => {
             res.json({ status: 'ok', nama_surat: name, data: dataSurat })
         }
     } catch (error) {
-        res.json({ status: 'failed', message: 'data not found' })
-        console.log(error, '<-- error get surat');
+        res.status(400).json({ status: 'failed', message: 'data not found' })
     }
 }
 
@@ -157,12 +166,10 @@ const createSuratByType = async (req, res) => {
         res.json({ status: 'ok', message: 'created successfully' })
 
     } catch (error) {
-        res.json({
+        res.status(400).json({
             status: 'failed',
             message: 'nomor surat sudah terdaftar'
         })
-
-        console.log(error, 'error create surat');
     }
 }
 
