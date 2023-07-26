@@ -73,9 +73,20 @@ const getSuratQuery = async (name, id) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id, id_warga, no_surat } = req.query
+        const { name, id, id_warga, no_surat, id_pegawai } = req.query
         
-        if (no_surat) {
+        if (id_pegawai) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    id_pegawai: id_pegawai
+                }
+            })
+            if (dataSurat === null) {
+                res.json({ status: 'failed', message: 'pegawai belum menandatangani surat apapun' })
+            } else {
+                res.json({ status: 'ok', data: dataSurat })
+            }
+        } else if (no_surat) {
             const dataSurat = await Surat.findOne({
                 where: {
                     no_surat: no_surat
