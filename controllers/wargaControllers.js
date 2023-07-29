@@ -3,7 +3,9 @@ const { Warga, Warga_pelapor } = require('../models')
 
 const getAllWarga = async (req, res) => {
     try {
-        const { nik } = req.query
+        const { nik, search } = req.query
+        // console.log(nik, '<-- nik query');
+        // console.log(search, '<-- search query');
         const currentPage = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 10
         
@@ -11,9 +13,28 @@ const getAllWarga = async (req, res) => {
             const { count, rows } = await Warga.findAndCountAll({ 
                 where: { 
                     nik: nik
-                    // nik: {
-                    //     [Op.like]: `%${nik}%`
-                    // }
+                },
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+
+        } else if (search) {
+            const { count, rows } = await Warga.findAndCountAll({ 
+                where: { 
+                    [Op.or]: [
+                        { nik: { [Op.like]: `%${search}%` } },
+                        { nama: { [Op.like]: `%${search}%` } }
+                    ]
                 },
                 offset: (currentPage - 1) * limit,
                 limit: limit

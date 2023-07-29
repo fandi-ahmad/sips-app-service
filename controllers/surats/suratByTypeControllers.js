@@ -3,6 +3,7 @@
 // surat keterangan belum bekerja
 // surat keterangan belum menikah
 
+const { Op } = require('sequelize');
 const { Surat, sequelize, Warga } = require('../../models')
 
 const getSuratQuery = async (name, id) => {
@@ -20,8 +21,12 @@ const getSuratQuery = async (name, id) => {
         FROM surats 
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
-        WHERE surats.nama_surat = "${name}"
     `;
+    // WHERE surats.nama_surat = "${name}"
+
+    if (name) {
+        query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+    }
 
     if (id) {
         query += ` AND surats.id = "${id}"`;
@@ -34,6 +39,7 @@ const getSuratQuery = async (name, id) => {
             id: item.id,
             no_surat: item.no_surat,
             no_surat_number: item.no_surat_number,
+            nama_surat: item.nama_surat,
             maksud: item.maksud,
             isi_surat: item.isi_surat,
             no_surat_pengantar: item.no_surat_pengantar,
@@ -67,14 +73,46 @@ const getSuratQuery = async (name, id) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id } = req.query
-        // console.log(typeof(id), id, '<-- id untuk surat')
+        const { name, id, id_warga, no_surat, id_pegawai } = req.query
         
-        const dataSurat = await getSuratQuery(name, id)
-
-        res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        if (id_pegawai) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    id_pegawai: id_pegawai
+                }
+            })
+            if (dataSurat === null) {
+                res.json({ status: 'failed', message: 'pegawai belum menandatangani surat apapun' })
+            } else {
+                res.json({ status: 'ok', data: dataSurat })
+            }
+        } else if (no_surat) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    no_surat: no_surat
+                }
+            })
+            if (dataSurat === null) {
+                res.status(404).json({ message: 'id surat belum terdaftar' })
+            } else {
+                res.json({ status: 'ok', data: dataSurat })
+            }
+        } else if (!name) {
+            const dataSurat = await getSuratQuery('', '')
+            res.json({ status: 'ok', data: dataSurat })
+        } else if (id_warga) {
+            const dataSurat = await Surat.findOne({
+                where: {
+                    id_warga: id_warga
+                }
+            })
+            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        } else {
+            const dataSurat = await getSuratQuery(name, id)
+            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+        }
     } catch (error) {
-        res.json({ status: 'failed', message: 'data not found' })
+        res.status(400).json({ status: 'failed', message: 'data not found' })
     }
 }
 
@@ -89,36 +127,57 @@ const createSuratByType = async (req, res) => {
 
         } = req.body
 
-        const newWarga = await Warga.create({
-            nama: nama,
-            nik: nik,
-            jenis_kelamin: jenis_kelamin,
-            tempat_lahir: tempat_lahir,
-            tanggal_lahir: tanggal_lahir,
-            pekerjaan: pekerjaan,
-            kewarganegaraan: kewarganegaraan,
-            status: status,
-            agama: agama,
-            alamat: alamat,
-            rt_rw: rt_rw,
+        const wargaByNik = await Warga.findOne({
+            where: {
+                nik: nik
+            }
         })
 
-        const newSurat = await Surat.create({
-            no_surat: no_surat,
-            no_surat_number: no_surat_number,
-            nama_surat: nama_surat,
-            maksud: maksud,
-            isi_surat: isi_surat,
-            id_pegawai: id_pegawai,
-            id_warga: newWarga.id,
-            no_surat_pengantar: no_surat_pengantar,
-            tgl_surat_pengantar: tgl_surat_pengantar
-        })
+        if (wargaByNik) {
+            const newSurat = await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: wargaByNik.dataValues.id,
+                no_surat_pengantar: no_surat_pengantar,
+                tgl_surat_pengantar: tgl_surat_pengantar
+            })
+        } else {
+            const newWarga = await Warga.create({
+                nama: nama,
+                nik: nik,
+                jenis_kelamin: jenis_kelamin,
+                tempat_lahir: tempat_lahir,
+                tanggal_lahir: tanggal_lahir,
+                pekerjaan: pekerjaan,
+                kewarganegaraan: kewarganegaraan,
+                status: status,
+                agama: agama,
+                alamat: alamat,
+                rt_rw: rt_rw,
+            })
+
+            const newSurat = await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: newWarga.id,
+                no_surat_pengantar: no_surat_pengantar,
+                tgl_surat_pengantar: tgl_surat_pengantar
+            })
+
+        }
 
         res.json({ status: 'ok', message: 'created successfully' })
 
     } catch (error) {
-        res.json({
+        res.status(400).json({
             status: 'failed',
             message: 'nomor surat sudah terdaftar'
         })
