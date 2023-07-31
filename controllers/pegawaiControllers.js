@@ -26,6 +26,19 @@ const getAllPegawai = async (req, res) => {
     }
 }
 
+const getPegawaiActive = async (req, res) => {
+    try {
+        const pegawai = await Pegawai.findOne({
+            where: {
+                isActive: true
+            }
+        })
+        res.json({status: 'ok', data: pegawai})
+    } catch (error) {
+        res.status(400)
+    }
+}
+
 const createPegawai = async (req, res) => {
     try {
         const { nama, jabatan, nip, isActive } = req.body
@@ -88,4 +101,4 @@ const deletePegawai = async (req, res) => {
     }
 }
 
-module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai }
+module.exports = { getAllPegawai, createPegawai, updatePegawai, deletePegawai, getPegawaiActive }
