@@ -70,6 +70,51 @@ const getSuratQuery = async (name, id) => {
     return formattedData
 }
 
+const getAllSuratTypes = async (req, res) => {
+    try {
+        const currentPage = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+        const nama_surat = req.query.nama_surat
+
+        if (nama_surat) {
+            const { count, rows } = await Surat.findAndCountAll({
+                where: {
+                    nama_surat: nama_surat
+                },
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+        } else {
+            const { count, rows } = await Surat.findAndCountAll({
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+            
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+        }
+
+    } catch (error) {
+        console.log(error, '<-- error get all surat tipe');
+    }
+}
 
 const getAllSuratByType = async (req, res) => {
     try {
@@ -235,4 +280,4 @@ const updateSuratByType = async (req, res) => {
     }
 }
 
-module.exports = { getAllSuratByType, createSuratByType, updateSuratByType }
+module.exports = { getAllSuratByType, createSuratByType, updateSuratByType, getAllSuratTypes }
