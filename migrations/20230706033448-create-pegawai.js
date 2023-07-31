@@ -19,7 +19,6 @@ module.exports = {
       },
       nip: {
         allowNull: false,
-        unique: true,    
         type: Sequelize.STRING
       },
       createdAt: {
