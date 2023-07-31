@@ -28,7 +28,7 @@ const getAllPegawai = async (req, res) => {
 
 const getPegawaiActive = async (req, res) => {
     try {
-        const pegawai = await Pegawai.findOne({
+        const pegawai = await Pegawai.findAll({
             where: {
                 isActive: true
             }
