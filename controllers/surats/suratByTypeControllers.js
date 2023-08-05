@@ -6,7 +6,7 @@
 const { Op } = require('sequelize');
 const { Surat, sequelize, Warga } = require('../../models')
 
-const getSuratQuery = async (name, id) => {
+const getSuratQuery = async (name, id, search) => {
     let query = /*sql*/ `
         SELECT 
             surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
@@ -28,6 +28,15 @@ const getSuratQuery = async (name, id) => {
 
     if (id) {
         query += ` AND surats.id = "${id}"`;
+    }
+
+    if (search) {
+        query += /*sql*/ `
+            WHERE 
+                pegawais.nama LIKE '%${search}%' OR
+                w.nama LIKE '%${search}%' OR
+                surats.no_surat LIKE '%${search}%';
+        `
     }
 
     const dataSurat = await sequelize.query(query)
@@ -117,9 +126,13 @@ const getAllSuratTypes = async (req, res) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id, id_warga, no_surat, id_pegawai } = req.query
+        const { name, id, id_warga, no_surat, id_pegawai, search } = req.query
         
-        if (id_pegawai) {
+        if (search) {
+            const dataSurat = await getSuratQuery('', '', search)
+            res.json({ status: 'ok', data: dataSurat })
+            console.log('pencarian surat by search');
+        } else if (id_pegawai) {
             const dataSurat = await Surat.findOne({
                 where: {
                     id_pegawai: id_pegawai
@@ -142,7 +155,7 @@ const getAllSuratByType = async (req, res) => {
                 res.json({ status: 'ok', data: dataSurat })
             }
         } else if (!name) {
-            const dataSurat = await getSuratQuery('', '')
+            const dataSurat = await getSuratQuery('', '', '')
             res.json({ status: 'ok', data: dataSurat })
         } else if (id_warga) {
             const dataSurat = await Surat.findOne({
@@ -152,7 +165,7 @@ const getAllSuratByType = async (req, res) => {
             })
             res.json({ status: 'ok', nama_surat: name, data: dataSurat })
         } else {
-            const dataSurat = await getSuratQuery(name, id)
+            const dataSurat = await getSuratQuery(name, id, '')
             res.json({ status: 'ok', nama_surat: name, data: dataSurat })
         }
     } catch (error) {
