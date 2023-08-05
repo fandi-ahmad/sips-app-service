@@ -11,7 +11,7 @@ const getSuratQuery = async (name, id) => {
         SELECT 
             surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
             surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
-            surats.no_surat_pengantar, surats.tgl_surat_pengantar,
+            surats.no_surat_pengantar, surats.tgl_surat_pengantar, surats.id_surat_khusus,
 
             pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
 
@@ -22,8 +22,6 @@ const getSuratQuery = async (name, id) => {
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
     `;
-    // WHERE surats.nama_surat = "${name}"
-
     if (name) {
         query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
     }
@@ -45,6 +43,7 @@ const getSuratQuery = async (name, id) => {
             no_surat_pengantar: item.no_surat_pengantar,
             tgl_surat_pengantar: item.tgl_surat_pengantar,
             createdAt: item.createdAt,
+            id_surat_khusus: item.id_surat_khusus,
             pegawai: {
                 id_pegawai: item.id_pegawai,
                 nama: item.nama_pegawai,
