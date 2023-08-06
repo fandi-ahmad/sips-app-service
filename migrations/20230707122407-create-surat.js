@@ -11,7 +11,6 @@ module.exports = {
       },
       no_surat: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING
       },
       no_surat_number: {
