@@ -14,12 +14,16 @@ const ketUsahaRouter = require('./surats/ketUsahaRouter')
 const ketRumah = require('./surats/ketRumah')
 const suratByTYpe = require('./surats/suratByTypeRoute')
 
+// ===== DATA DASHBOARD ONLY =====
+const { getDataDashboard } = require('../controllers/dashboardController')
+
 // ===== VIEWS ROUTER =====
 const { viewPegawai, viewWarga, viewSuratBaik, viewSuratUsaha } = require('../controllers/viewControllers')
 
 router.use('/api/v1', pegawaiRouter)
 router.use('/api/v1', wargaRouter)
 router.use('/api/v1', userRouter)
+router.get('/api/v1/dashboard', verifyToken, getDataDashboard)
 
 router.use('/api/v1/surat', kelBaikRouter)
 router.use('/api/v1/surat', ketUsahaRouter)
