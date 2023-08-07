@@ -9,7 +9,7 @@ const getAllSuratKetUsaha = async (req, res) => {
             SELECT 
                 surats.id, surats.no_surat, surats.nama_surat, surats.maksud,
                 surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
-                surats.id_surat_khusus,
+                surats.id_surat_khusus, surats.no_surat_pengantar, surats.no_surat_number,
 
                 pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
 
@@ -37,6 +37,8 @@ const getAllSuratKetUsaha = async (req, res) => {
             return {
                 id: item.id,
                 no_surat: item.no_surat,
+                no_surat_number: item.no_surat_number,
+                no_surat_pengantar: item.no_surat_pengantar,
                 nama_surat: item.nama_surat,
                 maksud: item.maksud,
                 isi_surat: item.isi_surat,
@@ -162,7 +164,7 @@ const updateSuratKetUsaha = async (req, res) => {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw,
 
-            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat,
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat, no_surat_pengantar,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
             alamat_usaha, tahun_berdiri, bertempat
@@ -185,6 +187,7 @@ const updateSuratKetUsaha = async (req, res) => {
 
         updateSurat.maksud = maksud
         updateSurat.isi_surat = isi_surat
+        updateSurat.no_surat_pengantar = no_surat_pengantar
 
         updateWarga.nama = nama
         updateWarga.nik = nik

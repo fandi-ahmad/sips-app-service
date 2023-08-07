@@ -273,6 +273,8 @@ const updateSuratByType = async (req, res) => {
 
         surat.no_surat = no_surat
         surat.no_surat_number = no_surat_number
+        surat.maksud = maksud
+        surat.no_surat_pengantar = no_surat_pengantar
         // surat.nama_surat = nama_surat
         surat.id_pegawai = id_pegawai
 
