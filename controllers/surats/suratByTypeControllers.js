@@ -177,7 +177,7 @@ const createSuratByType = async (req, res) => {
     try {
         const {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
-            kewarganegaraan, status, agama, alamat, rt_rw,
+            kewarganegaraan, status, agama, alamat, rt_rw, variabel,
 
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
             no_surat_pengantar, tgl_surat_pengantar, nama_surat
@@ -220,6 +220,7 @@ const createSuratByType = async (req, res) => {
             const newSurat = await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
+                variabel: variabel,
                 nama_surat: nama_surat,
                 maksud: maksud,
                 isi_surat: isi_surat,

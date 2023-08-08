@@ -97,7 +97,7 @@ const createSuratKetUsaha = async (req, res) => {
     try {
         const {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
-            kewarganegaraan, status, agama, alamat, rt_rw,
+            kewarganegaraan, status, agama, alamat, rt_rw, variabel,
 
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai, no_surat_pengantar,
 
@@ -140,6 +140,7 @@ const createSuratKetUsaha = async (req, res) => {
             no_surat: no_surat,
             no_surat_number: no_surat_number,
             no_surat_pengantar: no_surat_pengantar,
+            variabel: variabel,
             nama_surat: 'surat keterangan usaha',
             maksud: maksud,
             isi_surat: isi_surat,

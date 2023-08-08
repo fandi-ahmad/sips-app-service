@@ -30,6 +30,9 @@ module.exports = {
       label: {
         type: Sequelize.STRING
       },
+      variabel: {
+        type: Sequelize.STRING
+      },
       no_surat_pengantar: {
         type: Sequelize.STRING
       },
