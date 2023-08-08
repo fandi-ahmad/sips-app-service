@@ -7,7 +7,7 @@ const getAllSuratKetUsaha = async (req, res) => {
 
         let query = /*sql*/`
             SELECT 
-                surats.id, surats.no_surat, surats.nama_surat, surats.maksud,
+                surats.id, surats.no_surat, surats.nama_surat, surats.maksud, surats.variabel,
                 surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
                 surats.id_surat_khusus, surats.no_surat_pengantar, surats.no_surat_number,
 
@@ -39,6 +39,7 @@ const getAllSuratKetUsaha = async (req, res) => {
                 no_surat: item.no_surat,
                 no_surat_number: item.no_surat_number,
                 no_surat_pengantar: item.no_surat_pengantar,
+                variabel: item.variabel,
                 nama_surat: item.nama_surat,
                 maksud: item.maksud,
                 isi_surat: item.isi_surat,

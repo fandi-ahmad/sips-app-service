@@ -11,7 +11,7 @@ const getSuratQuery = async (name, id, search) => {
         SELECT 
             surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
             surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
-            surats.no_surat_pengantar, surats.tgl_surat_pengantar, surats.id_surat_khusus,
+            surats.no_surat_pengantar, surats.tgl_surat_pengantar, surats.id_surat_khusus, surats.variabel,
 
             pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
 
@@ -46,6 +46,7 @@ const getSuratQuery = async (name, id, search) => {
             id: item.id,
             no_surat: item.no_surat,
             no_surat_number: item.no_surat_number,
+            variabel: item.variabel,
             nama_surat: item.nama_surat,
             maksud: item.maksud,
             isi_surat: item.isi_surat,
