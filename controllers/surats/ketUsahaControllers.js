@@ -111,51 +111,99 @@ const createSuratKetUsaha = async (req, res) => {
             alamat_usaha, tahun_berdiri, bertempat, penghasilan
         } = req.body
 
-
-        const newWarga = await Warga.create({
-            nama: nama,
-            nik: nik,
-            jenis_kelamin: jenis_kelamin,
-            tempat_lahir: tempat_lahir,
-            tanggal_lahir: tanggal_lahir,
-            pekerjaan: pekerjaan,
-            kewarganegaraan: kewarganegaraan,
-            status: status,
-            agama: agama,
-            alamat: alamat,
-            rt_rw: rt_rw,
+        const wargaByNik = await Warga.findOne({
+            where: {
+                nik: nik
+            }
         })
 
-        const newUsaha = await Ket_usaha.create({
-            nama_usaha: nama_usaha,
-            jenis_usaha: jenis_usaha,
-            npwp: npwp,
-            no_izin_usaha: no_izin_usaha,
-            no_fiskal: no_fiskal,
-            luas_tempat_usaha: luas_tempat_usaha,
-            alamat_usaha: alamat_usaha,
-            tahun_berdiri: tahun_berdiri,
-            bertempat: bertempat,
-            penghasilan: penghasilan
-        })
+        if (wargaByNik) {
+            const newUsaha = await Ket_usaha.create({
+                nama_usaha: nama_usaha,
+                jenis_usaha: jenis_usaha,
+                npwp: npwp,
+                no_izin_usaha: no_izin_usaha,
+                no_fiskal: no_fiskal,
+                luas_tempat_usaha: luas_tempat_usaha,
+                alamat_usaha: alamat_usaha,
+                tahun_berdiri: tahun_berdiri,
+                bertempat: bertempat,
+                penghasilan: penghasilan
+            })
 
-        const newSuratKhusus = await Surat_khusus.create({
-            id_ket_usaha: newUsaha.id
-        })
+            const newSuratKhusus = await Surat_khusus.create({
+                id_ket_usaha: newUsaha.id
+            })
 
-        const newSurat = await Surat.create({
-            no_surat: no_surat,
-            no_surat_number: no_surat_number,
-            no_surat_pengantar: no_surat_pengantar,
-            variabel: variabel,
-            nama_surat: nama_surat,
-            maksud: maksud,
-            isi_surat: isi_surat,
-            id_pegawai: id_pegawai,
-            id_warga: newWarga.id,
-            id_surat_khusus: newSuratKhusus.id
-        })
+            await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                no_surat_pengantar: no_surat_pengantar,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: wargaByNik.dataValues.id,
+                id_surat_khusus: newSuratKhusus.id
+            })
 
+            wargaByNik.nama = nama
+            wargaByNik.jenis_kelamin = jenis_kelamin
+            wargaByNik.tempat_lahir = tempat_lahir
+            wargaByNik.tanggal_lahir = tanggal_lahir
+            wargaByNik.pekerjaan = pekerjaan
+            wargaByNik.kewarganegaraan = kewarganegaraan
+            wargaByNik.status = status
+            wargaByNik.agama = agama
+            wargaByNik.alamat = alamat
+            wargaByNik.rt_rw = rt_rw
+            wargaByNik.save()
+
+        } else {
+            const newWarga = await Warga.create({
+                nama: nama,
+                nik: nik,
+                jenis_kelamin: jenis_kelamin,
+                tempat_lahir: tempat_lahir,
+                tanggal_lahir: tanggal_lahir,
+                pekerjaan: pekerjaan,
+                kewarganegaraan: kewarganegaraan,
+                status: status,
+                agama: agama,
+                alamat: alamat,
+                rt_rw: rt_rw,
+            })
+    
+            const newUsaha = await Ket_usaha.create({
+                nama_usaha: nama_usaha,
+                jenis_usaha: jenis_usaha,
+                npwp: npwp,
+                no_izin_usaha: no_izin_usaha,
+                no_fiskal: no_fiskal,
+                luas_tempat_usaha: luas_tempat_usaha,
+                alamat_usaha: alamat_usaha,
+                tahun_berdiri: tahun_berdiri,
+                bertempat: bertempat,
+                penghasilan: penghasilan
+            })
+    
+            const newSuratKhusus = await Surat_khusus.create({
+                id_ket_usaha: newUsaha.id
+            })
+    
+            const newSurat = await Surat.create({
+                no_surat: no_surat,
+                no_surat_number: no_surat_number,
+                no_surat_pengantar: no_surat_pengantar,
+                variabel: variabel,
+                nama_surat: nama_surat,
+                maksud: maksud,
+                isi_surat: isi_surat,
+                id_pegawai: id_pegawai,
+                id_warga: newWarga.id,
+                id_surat_khusus: newSuratKhusus.id
+            })
+        }
 
         res.json({
             status: 'ok'

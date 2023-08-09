@@ -192,7 +192,7 @@ const createSuratByType = async (req, res) => {
         })
 
         if (wargaByNik) {
-            const newSurat = await Surat.create({
+            await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
                 nama_surat: nama_surat,
@@ -203,6 +203,17 @@ const createSuratByType = async (req, res) => {
                 no_surat_pengantar: no_surat_pengantar,
                 tgl_surat_pengantar: tgl_surat_pengantar
             })
+            wargaByNik.nama = nama
+            wargaByNik.jenis_kelamin = jenis_kelamin
+            wargaByNik.tempat_lahir = tempat_lahir
+            wargaByNik.tanggal_lahir = tanggal_lahir
+            wargaByNik.pekerjaan = pekerjaan
+            wargaByNik.kewarganegaraan = kewarganegaraan
+            wargaByNik.status = status
+            wargaByNik.agama = agama
+            wargaByNik.alamat = alamat
+            wargaByNik.rt_rw = rt_rw
+            wargaByNik.save()
         } else {
             const newWarga = await Warga.create({
                 nama: nama,
@@ -218,7 +229,7 @@ const createSuratByType = async (req, res) => {
                 rt_rw: rt_rw,
             })
 
-            const newSurat = await Surat.create({
+            await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
                 variabel: variabel,

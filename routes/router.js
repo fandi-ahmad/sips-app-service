@@ -13,6 +13,7 @@ const kelBaikRouter = require('./surats/kelBaikRouter')
 const ketUsahaRouter = require('./surats/ketUsahaRouter')
 const ketRumah = require('./surats/ketRumah')
 const suratByTYpe = require('./surats/suratByTypeRoute')
+const suratKematian = require('./surats/ketKematianRouter')
 
 // ===== DATA DASHBOARD ONLY =====
 const { getDataDashboard } = require('../controllers/dashboardController')
@@ -29,6 +30,7 @@ router.use('/api/v1/surat', kelBaikRouter)
 router.use('/api/v1/surat', ketUsahaRouter)
 router.use('/api/v1/surat', ketRumah)
 router.use('/api/v1/surat', suratByTYpe)
+router.use('/api/v1/surat', suratKematian)
 
 router.get('/', (req, res) => {
     res.render('dashboard')
