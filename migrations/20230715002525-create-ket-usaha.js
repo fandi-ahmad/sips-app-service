@@ -37,7 +37,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       penghasilan: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

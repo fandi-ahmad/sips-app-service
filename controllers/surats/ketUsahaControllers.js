@@ -20,7 +20,7 @@ const getAllSuratKetUsaha = async (req, res) => {
                 w.nama AS nama_warga, w.nik, w.jenis_kelamin, w.tempat_lahir, w.tanggal_lahir,
                 w.pekerjaan, w.kewarganegaraan, w.status, w.agama, w.alamat, w.rt_rw,
 
-                surat_khusus.id_ket_usaha,
+                surat_khusus.id_ket_usaha, ku.penghasilan,
 
                 ku.nama_usaha, ku.jenis_usaha, ku.npwp, ku.no_izin_usaha, ku.no_fiskal,
                 ku.luas_tempat_usaha, ku.alamat_usaha, ku.tahun_berdiri, ku.bertempat
@@ -81,7 +81,8 @@ const getAllSuratKetUsaha = async (req, res) => {
                     luas_tempat_usaha: item.luas_tempat_usaha,
                     alamat_usaha: item.alamat_usaha, 
                     tahun_berdiri: item.tahun_berdiri, 
-                    bertempat: item.bertempat
+                    bertempat: item.bertempat,
+                    penghasilan: item.penghasilan
                 }
             };
         });
