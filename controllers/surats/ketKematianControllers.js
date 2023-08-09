@@ -67,6 +67,7 @@ const getSuratKematian = async (req, res) => {
                     id_kematian: item.id_kematian,
                     sebab_kematian: item.sebab_kematian,
                     tempat_kematian: item.tempat_kematian,
+                    hari_tanggal: item.hari_tanggal,
                     hubungan: item.hubungan,
                     nama_pelapor: item.nama_warga_pelapor,
                     nik_pelapor: item.nik_pelapor,
@@ -205,4 +206,80 @@ const createSuratKematian = async (req, res) => {
     }
 }
 
-module.exports = { getSuratKematian, createSuratKematian }
+const updateSuratKematian = async (req, res) => {
+    try {
+        const {
+            nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
+            kewarganegaraan, status, agama, alamat, rt_rw, id_surat,
+
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
+            no_surat_pengantar, tgl_surat_pengantar, nama_surat,
+
+            sebab_kematian, tempat_kematian, hari_tanggal, hubungan,
+            nama_p, nik_p, alamat_p
+
+        } = req.body
+
+        const updateSurat = await Surat.findByPk(id_surat)
+
+        const id_warga = updateSurat.dataValues.id_warga
+        const updateWarga = await Warga.findByPk(id_warga)
+
+        const id_surat_khusus = updateSurat.dataValues.id_surat_khusus
+        const updateSuratKhusus = await Surat_khusus.findByPk(id_surat_khusus)
+
+        const id_ket_kematian = updateSuratKhusus.dataValues.id_kematian
+        const updateKetMati = await Surat_kematian.findByPk(id_ket_kematian)
+
+        const id_warga_pelapor = updateSurat.dataValues.id_warga_pelapor
+        const updateWargaPelapor = await Warga_pelapor.findByPk(id_warga_pelapor)
+
+        if (id_pegawai) {
+            updateSurat.id_pegawai = id_pegawai
+        }
+
+        updateSurat.maksud = maksud
+        updateSurat.isi_surat = isi_surat
+        updateSurat.no_surat_pengantar = no_surat_pengantar
+        updateSurat.no_surat = no_surat
+
+        updateWarga.nama = nama
+        updateWarga.nik = nik
+        updateWarga.jenis_kelamin = jenis_kelamin
+        updateWarga.tempat_lahir = tempat_lahir
+        updateWarga.tanggal_lahir = tanggal_lahir
+        updateWarga.pekerjaan = pekerjaan
+        updateWarga.kewarganegaraan = kewarganegaraan
+        updateWarga.status = status
+        updateWarga.agama = agama
+        updateWarga.alamat = alamat
+        updateWarga.rt_rw = rt_rw
+
+        updateKetMati.sebab_kematian = sebab_kematian
+        updateKetMati.tempat_kematian = tempat_kematian
+        updateKetMati.hari_tanggal = hari_tanggal
+        updateKetMati.hubungan = hubungan
+        
+        updateWargaPelapor.nama = nama_p
+        updateWargaPelapor.nik = nik_p
+        updateWargaPelapor.alamat = alamat_p
+
+        updateSurat.save()
+        updateWarga.save()
+        updateKetMati.save()
+        updateWargaPelapor.save()
+
+        res.json({
+            status: 'ok',
+            message: 'updated successfully',
+            surat: updateSurat,
+            warga: updateWarga,
+        })
+
+    } catch (error) {
+        console.log(error, '<-- error update surat kematian');
+        res.json({status: 400, message: 'error'})
+    }
+}
+
+module.exports = { getSuratKematian, createSuratKematian, updateSuratKematian }
