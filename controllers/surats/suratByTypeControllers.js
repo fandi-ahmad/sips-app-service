@@ -22,22 +22,48 @@ const getSuratQuery = async (name, id, search) => {
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
     `;
+    // if (name) {
+    //     query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+    // }
+
+    // if (id) {
+    //     query += ` AND surats.id = "${id}"`;
+    // }
+
+    // if (search) {
+    //     query += /*sql*/ `
+    //         WHERE 
+    //             pegawais.nama LIKE '%${search}%' OR
+    //             w.nama LIKE '%${search}%' OR
+    //             surats.no_surat LIKE '%${search}%';
+    //     `
+    // }
+
+    let whereClauses = [];
+
     if (name) {
-        query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+        whereClauses.push(`surats.nama_surat = "${name}"`);
     }
 
     if (id) {
-        query += ` AND surats.id = "${id}"`;
+        whereClauses.push(`surats.id = "${id}"`);
     }
 
     if (search) {
-        query += /*sql*/ `
-            WHERE 
+        whereClauses.push(
+            /*sql*/ `
                 pegawais.nama LIKE '%${search}%' OR
                 w.nama LIKE '%${search}%' OR
-                surats.no_surat LIKE '%${search}%';
-        `
+                surats.no_surat LIKE '%${search}%'
+            `
+        );
     }
+
+    if (whereClauses.length > 0) {
+        query += ' WHERE ' + whereClauses.join(' AND ');
+    }
+
+    query += ' ORDER BY surats.createdAt DESC'; 
 
     const dataSurat = await sequelize.query(query)
 
@@ -267,10 +293,6 @@ const updateSuratByType = async (req, res) => {
 
         const surat = await Surat.findByPk(id)
         const warga = await Warga.findByPk(surat.dataValues.id_warga)
-
-        // console.log(warga, '<-- data warga dari db');
-        console.log(surat.dataValues.id_warga, '<-- data surat dari db');
-        console.log(nama, '<-- request body');
 
         warga.nama = nama
         warga.nik = nik
