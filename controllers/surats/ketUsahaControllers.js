@@ -1,9 +1,13 @@
+// surat keterangan usaha
+// surat keterangan domisili usaha
+// surat keterangan penghasilan
+
 const { Surat, sequelize, Pegawai, Warga, Surat_khusus, Ket_usaha } = require('../../models')
 
 const getAllSuratKetUsaha = async (req, res) => {
     try {
-        console.log('testing... untuk get semua surat');
-        const { id } = req.query
+        const { name, id } = req.query
+        console.log(name, id, '<-- name dan id');
 
         let query = /*sql*/`
             SELECT 
@@ -26,7 +30,7 @@ const getAllSuratKetUsaha = async (req, res) => {
             JOIN wargas AS w ON (surats.id_warga = w.id)
             JOIN surat_khusus ON (surats.id_surat_khusus = surat_khusus.id)
             JOIN ket_usahas AS ku ON (surat_khusus.id_ket_usaha = ku.id)
-            where surats.nama_surat = "surat keterangan usaha" 
+            where surats.nama_surat = "${name}" 
         `;
 
         id ? query += ` AND surats.id = "${id}"` : null
@@ -90,7 +94,7 @@ const getAllSuratKetUsaha = async (req, res) => {
         res.json(result)
     } catch (error) {
         // res.status(400)
-        console.log(error, '<-- error get all surat ket baik')
+        console.log(error, '<-- error get all surat ket usaha')
     }
 }
 
@@ -100,10 +104,10 @@ const createSuratKetUsaha = async (req, res) => {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw, variabel,
 
-            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, no_surat_pengantar,
+            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, no_surat_pengantar, nama_surat,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
-            alamat_usaha, tahun_berdiri, bertempat
+            alamat_usaha, tahun_berdiri, bertempat, penghasilan
         } = req.body
 
 
@@ -130,7 +134,8 @@ const createSuratKetUsaha = async (req, res) => {
             luas_tempat_usaha: luas_tempat_usaha,
             alamat_usaha: alamat_usaha,
             tahun_berdiri: tahun_berdiri,
-            bertempat: bertempat
+            bertempat: bertempat,
+            penghasilan: penghasilan
         })
 
         const newSuratKhusus = await Surat_khusus.create({
@@ -142,7 +147,7 @@ const createSuratKetUsaha = async (req, res) => {
             no_surat_number: no_surat_number,
             no_surat_pengantar: no_surat_pengantar,
             variabel: variabel,
-            nama_surat: 'surat keterangan usaha',
+            nama_surat: nama_surat,
             maksud: maksud,
             isi_surat: isi_surat,
             id_pegawai: id_pegawai,
@@ -169,7 +174,7 @@ const updateSuratKetUsaha = async (req, res) => {
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat, no_surat_pengantar,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
-            alamat_usaha, tahun_berdiri, bertempat
+            alamat_usaha, tahun_berdiri, bertempat, penghasilan
         } = req.body
 
         const updateSurat = await Surat.findByPk(id_surat)
@@ -212,6 +217,7 @@ const updateSuratKetUsaha = async (req, res) => {
         updateKetUsaha.alamat_usaha = alamat_usaha
         updateKetUsaha.tahun_berdiri = tahun_berdiri
         updateKetUsaha.bertempat = bertempat
+        updateKetUsaha.penghasilan = penghasilan
 
         updateSurat.save()
         updateWarga.save()
