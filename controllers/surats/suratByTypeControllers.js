@@ -6,7 +6,8 @@
 const { Op } = require('sequelize');
 const { Surat, sequelize, Warga } = require('../../models')
 
-const getSuratQuery = async (name, id, search) => {
+const getSuratQuery = async (name, id, search, page = 1, limit = 0) => {
+    const offset = (page - 1) * limit;
     let query = /*sql*/ `
         SELECT 
             surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
@@ -65,6 +66,11 @@ const getSuratQuery = async (name, id, search) => {
 
     query += ' ORDER BY surats.createdAt DESC'; 
 
+    if (limit > 0) {
+        query += ` LIMIT ${limit} OFFSET ${offset}`;
+    }
+    // query += ` LIMIT ${limit} OFFSET ${offset}`;
+
     const dataSurat = await sequelize.query(query)
 
     const formattedData = dataSurat[0].map((item) => {
@@ -105,6 +111,7 @@ const getSuratQuery = async (name, id, search) => {
     return formattedData
 }
 
+// ❌
 const getAllSuratTypes = async (req, res) => {
     try {
         const currentPage = parseInt(req.query.page) || 1
@@ -153,14 +160,23 @@ const getAllSuratTypes = async (req, res) => {
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id, id_warga, no_surat, id_pegawai, search } = req.query
+        const { name, id, id_warga, no_surat, id_pegawai, search, page, limit } = req.query
+
+        const [suratCount] = await Promise.all([
+            Surat.count()
+        ]);
+        const totalPage = Math.ceil(suratCount / limit)
         
-        if (search) {
-            const dataSurat = await getSuratQuery('', '', search)
-            res.json({ status: 'ok', data: dataSurat })
-            console.log('pencarian surat by search');
+        if (name && search) {
+            const dataSurat = await getSuratQuery(name, '', search, page, limit)
+            const totalPageIt = Math.ceil(dataSurat.length / parseInt(limit))
+            res.json({ status: 'ok', message: 'get data by name and search', total_data: dataSurat.length, total_page: totalPageIt, data: dataSurat })
+        } else if (search) {
+            // search data
+            const dataSurat = await getSuratQuery('', '', search, page, limit)
+            res.json({ status: 'ok', message: 'search data', total_data: dataSurat.length, total_page: 1,  data: dataSurat })
         } else if (id_pegawai) {
-            const dataSurat = await Surat.findOne({
+            const dataSurat = await Surat.findAll({
                 where: {
                     id_pegawai: id_pegawai
                 }
@@ -182,9 +198,18 @@ const getAllSuratByType = async (req, res) => {
                 res.json({ status: 'ok', data: dataSurat })
             }
         } else if (!name) {
-            const dataSurat = await getSuratQuery('', '', '')
-            res.json({ status: 'ok', data: dataSurat })
+            // get all
+            const getTotalPage = () => {
+                if (!totalPage || !limit || limit === '' || limit == '0') {
+                    return 1
+                } else {
+                    return totalPage
+                }
+            }
+            const dataSurat = await getSuratQuery('', '', '', page, limit)
+            res.json({ status: 'ok', message: 'get data all data', total_data: suratCount, total_page: getTotalPage(), data: dataSurat })
         } else if (id_warga) {
+            // get by id warga
             const dataSurat = await Surat.findOne({
                 where: {
                     id_warga: id_warga
@@ -192,11 +217,21 @@ const getAllSuratByType = async (req, res) => {
             })
             res.json({ status: 'ok', nama_surat: name, data: dataSurat })
         } else {
-            const dataSurat = await getSuratQuery(name, id, '')
-            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+            // get by name and id surat
+            const [suratCountByName] = await Promise.all([
+                Surat.count({
+                    where: {
+                        nama_surat: name
+                    }
+                })
+            ]);
+            const totalPageByName = Math.ceil(suratCountByName / limit)
+            const dataSurat = await getSuratQuery(name, id, '', page, limit)
+            res.json({ status: 'ok', message: 'get data by name or id', nama_surat: name, total_data: suratCountByName, total_page: totalPageByName, data: dataSurat })
         }
     } catch (error) {
         res.status(400).json({ status: 'failed', message: 'data not found' })
+        console.log(error, '<-- error get all surat');
     }
 }
 
