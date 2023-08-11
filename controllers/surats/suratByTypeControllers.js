@@ -227,7 +227,7 @@ const getAllSuratByType = async (req, res) => {
             ]);
             const totalPageByName = Math.ceil(suratCountByName / limit)
             const dataSurat = await getSuratQuery(name, id, '', page, limit)
-            res.json({ status: 'ok', message: 'get data by name or id', nama_surat: name, total_data: suratCountByName, total_page: totalPageByName, data: dataSurat })
+            res.json({ status: 'ok', message: 'get data by name or id', nama_surat: name, total_data: suratCountByName, total_page: totalPageByName || 1, data: dataSurat })
         }
     } catch (error) {
         res.status(400).json({ status: 'failed', message: 'data not found' })
