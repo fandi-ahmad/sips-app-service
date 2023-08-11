@@ -11,12 +11,10 @@ module.exports = {
       },
       no_surat: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING
       },
       no_surat_number: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING
       },
       nama_surat: {
@@ -28,6 +26,12 @@ module.exports = {
       },
       isi_surat: {
         type: Sequelize.TEXT
+      },
+      label: {
+        type: Sequelize.STRING
+      },
+      variabel: {
+        type: Sequelize.STRING
       },
       no_surat_pengantar: {
         type: Sequelize.STRING

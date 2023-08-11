@@ -6,12 +6,13 @@
 const { Op } = require('sequelize');
 const { Surat, sequelize, Warga } = require('../../models')
 
-const getSuratQuery = async (name, id) => {
+const getSuratQuery = async (name, id, search, page = 1, limit = 0) => {
+    const offset = (page - 1) * limit;
     let query = /*sql*/ `
         SELECT 
             surats.id, surats.no_surat, surats.no_surat_number, surats.nama_surat, surats.maksud,
             surats.createdAt, surats.id_pegawai, surats.id_warga, surats.isi_surat,
-            surats.no_surat_pengantar, surats.tgl_surat_pengantar,
+            surats.no_surat_pengantar, surats.tgl_surat_pengantar, surats.id_surat_khusus, surats.variabel,
 
             pegawais.nama AS nama_pegawai, pegawais.jabatan, pegawais.nip,
 
@@ -22,15 +23,53 @@ const getSuratQuery = async (name, id) => {
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
     `;
-    // WHERE surats.nama_surat = "${name}"
+    // if (name) {
+    //     query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+    // }
+
+    // if (id) {
+    //     query += ` AND surats.id = "${id}"`;
+    // }
+
+    // if (search) {
+    //     query += /*sql*/ `
+    //         WHERE 
+    //             pegawais.nama LIKE '%${search}%' OR
+    //             w.nama LIKE '%${search}%' OR
+    //             surats.no_surat LIKE '%${search}%';
+    //     `
+    // }
+
+    let whereClauses = [];
 
     if (name) {
-        query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
+        whereClauses.push(`surats.nama_surat = "${name}"`);
     }
 
     if (id) {
-        query += ` AND surats.id = "${id}"`;
+        whereClauses.push(`surats.id = "${id}"`);
     }
+
+    if (search) {
+        whereClauses.push(
+            /*sql*/ `
+                pegawais.nama LIKE '%${search}%' OR
+                w.nama LIKE '%${search}%' OR
+                surats.no_surat LIKE '%${search}%'
+            `
+        );
+    }
+
+    if (whereClauses.length > 0) {
+        query += ' WHERE ' + whereClauses.join(' AND ');
+    }
+
+    query += ' ORDER BY surats.createdAt DESC'; 
+
+    if (limit > 0) {
+        query += ` LIMIT ${limit} OFFSET ${offset}`;
+    }
+    // query += ` LIMIT ${limit} OFFSET ${offset}`;
 
     const dataSurat = await sequelize.query(query)
 
@@ -39,12 +78,14 @@ const getSuratQuery = async (name, id) => {
             id: item.id,
             no_surat: item.no_surat,
             no_surat_number: item.no_surat_number,
+            variabel: item.variabel,
             nama_surat: item.nama_surat,
             maksud: item.maksud,
             isi_surat: item.isi_surat,
             no_surat_pengantar: item.no_surat_pengantar,
             tgl_surat_pengantar: item.tgl_surat_pengantar,
             createdAt: item.createdAt,
+            id_surat_khusus: item.id_surat_khusus,
             pegawai: {
                 id_pegawai: item.id_pegawai,
                 nama: item.nama_pegawai,
@@ -70,13 +111,72 @@ const getSuratQuery = async (name, id) => {
     return formattedData
 }
 
+// ❌
+const getAllSuratTypes = async (req, res) => {
+    try {
+        const currentPage = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+        const nama_surat = req.query.nama_surat
+
+        if (nama_surat) {
+            const { count, rows } = await Surat.findAndCountAll({
+                where: {
+                    nama_surat: nama_surat
+                },
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+        } else {
+            const { count, rows } = await Surat.findAndCountAll({
+                offset: (currentPage - 1) * limit,
+                limit: limit
+            })
+            
+            const result = {
+                status: 'ok',
+                page: currentPage,
+                limit: limit,
+                total_page: Math.ceil(count/limit),
+                total_data: count,
+                data: rows,
+            }
+            res.json(result)
+        }
+
+    } catch (error) {
+        console.log(error, '<-- error get all surat tipe');
+    }
+}
 
 const getAllSuratByType = async (req, res) => {
     try {
-        const { name, id, id_warga, no_surat, id_pegawai } = req.query
+        const { name, id, id_warga, no_surat, id_pegawai, search, page, limit } = req.query
+
+        const [suratCount] = await Promise.all([
+            Surat.count()
+        ]);
+        const totalPage = Math.ceil(suratCount / limit)
         
-        if (id_pegawai) {
-            const dataSurat = await Surat.findOne({
+        if (name && search) {
+            const dataSurat = await getSuratQuery(name, '', search, page, limit)
+            const totalPageIt = Math.ceil(dataSurat.length / parseInt(limit))
+            res.json({ status: 'ok', message: 'get data by name and search', total_data: dataSurat.length, total_page: totalPageIt, data: dataSurat })
+        } else if (search) {
+            // search data
+            const dataSurat = await getSuratQuery('', '', search, page, limit)
+            res.json({ status: 'ok', message: 'search data', total_data: dataSurat.length, total_page: 1,  data: dataSurat })
+        } else if (id_pegawai) {
+            const dataSurat = await Surat.findAll({
                 where: {
                     id_pegawai: id_pegawai
                 }
@@ -98,9 +198,18 @@ const getAllSuratByType = async (req, res) => {
                 res.json({ status: 'ok', data: dataSurat })
             }
         } else if (!name) {
-            const dataSurat = await getSuratQuery('', '')
-            res.json({ status: 'ok', data: dataSurat })
+            // get all
+            const getTotalPage = () => {
+                if (!totalPage || !limit || limit === '' || limit == '0') {
+                    return 1
+                } else {
+                    return totalPage
+                }
+            }
+            const dataSurat = await getSuratQuery('', '', '', page, limit)
+            res.json({ status: 'ok', message: 'get data all data', total_data: suratCount, total_page: getTotalPage(), data: dataSurat })
         } else if (id_warga) {
+            // get by id warga
             const dataSurat = await Surat.findOne({
                 where: {
                     id_warga: id_warga
@@ -108,11 +217,21 @@ const getAllSuratByType = async (req, res) => {
             })
             res.json({ status: 'ok', nama_surat: name, data: dataSurat })
         } else {
-            const dataSurat = await getSuratQuery(name, id)
-            res.json({ status: 'ok', nama_surat: name, data: dataSurat })
+            // get by name and id surat
+            const [suratCountByName] = await Promise.all([
+                Surat.count({
+                    where: {
+                        nama_surat: name
+                    }
+                })
+            ]);
+            const totalPageByName = Math.ceil(suratCountByName / limit)
+            const dataSurat = await getSuratQuery(name, id, '', page, limit)
+            res.json({ status: 'ok', message: 'get data by name or id', nama_surat: name, total_data: suratCountByName, total_page: totalPageByName || 1, data: dataSurat })
         }
     } catch (error) {
         res.status(400).json({ status: 'failed', message: 'data not found' })
+        console.log(error, '<-- error get all surat');
     }
 }
 
@@ -120,7 +239,7 @@ const createSuratByType = async (req, res) => {
     try {
         const {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
-            kewarganegaraan, status, agama, alamat, rt_rw,
+            kewarganegaraan, status, agama, alamat, rt_rw, variabel,
 
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
             no_surat_pengantar, tgl_surat_pengantar, nama_surat
@@ -134,7 +253,7 @@ const createSuratByType = async (req, res) => {
         })
 
         if (wargaByNik) {
-            const newSurat = await Surat.create({
+            await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
                 nama_surat: nama_surat,
@@ -145,6 +264,17 @@ const createSuratByType = async (req, res) => {
                 no_surat_pengantar: no_surat_pengantar,
                 tgl_surat_pengantar: tgl_surat_pengantar
             })
+            wargaByNik.nama = nama
+            wargaByNik.jenis_kelamin = jenis_kelamin
+            wargaByNik.tempat_lahir = tempat_lahir
+            wargaByNik.tanggal_lahir = tanggal_lahir
+            wargaByNik.pekerjaan = pekerjaan
+            wargaByNik.kewarganegaraan = kewarganegaraan
+            wargaByNik.status = status
+            wargaByNik.agama = agama
+            wargaByNik.alamat = alamat
+            wargaByNik.rt_rw = rt_rw
+            wargaByNik.save()
         } else {
             const newWarga = await Warga.create({
                 nama: nama,
@@ -160,9 +290,10 @@ const createSuratByType = async (req, res) => {
                 rt_rw: rt_rw,
             })
 
-            const newSurat = await Surat.create({
+            await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
+                variabel: variabel,
                 nama_surat: nama_surat,
                 maksud: maksud,
                 isi_surat: isi_surat,
@@ -198,10 +329,6 @@ const updateSuratByType = async (req, res) => {
         const surat = await Surat.findByPk(id)
         const warga = await Warga.findByPk(surat.dataValues.id_warga)
 
-        // console.log(warga, '<-- data warga dari db');
-        console.log(surat.dataValues.id_warga, '<-- data surat dari db');
-        console.log(nama, '<-- request body');
-
         warga.nama = nama
         warga.nik = nik
         warga.jenis_kelamin = jenis_kelamin
@@ -216,6 +343,8 @@ const updateSuratByType = async (req, res) => {
 
         surat.no_surat = no_surat
         surat.no_surat_number = no_surat_number
+        surat.maksud = maksud
+        surat.no_surat_pengantar = no_surat_pengantar
         // surat.nama_surat = nama_surat
         surat.id_pegawai = id_pegawai
 
@@ -235,4 +364,4 @@ const updateSuratByType = async (req, res) => {
     }
 }
 
-module.exports = { getAllSuratByType, createSuratByType, updateSuratByType }
+module.exports = { getAllSuratByType, createSuratByType, updateSuratByType, getAllSuratTypes }

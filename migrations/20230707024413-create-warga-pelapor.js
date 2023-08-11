@@ -19,39 +19,39 @@ module.exports = {
         type: Sequelize.STRING
       },
       jenis_kelamin: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.ENUM('l', 'p')
       },
       tempat_lahir: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       tanggal_lahir: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATEONLY
       },
       pekerjaan: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       kewarganegaraan: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       status: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       agama: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       alamat: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       rt_rw: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {

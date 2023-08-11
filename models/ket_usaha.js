@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     luas_tempat_usaha: DataTypes.STRING,
     alamat_usaha: DataTypes.STRING,
     tahun_berdiri: DataTypes.STRING,
-    bertempat: DataTypes.STRING
+    bertempat: DataTypes.STRING,
+    penghasilan: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Ket_usaha',

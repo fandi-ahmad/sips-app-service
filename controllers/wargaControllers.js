@@ -72,6 +72,16 @@ const getAllWarga = async (req, res) => {
     }
 }
 
+const getWargaById = async (req, res) => {
+    try {
+        const { id } = req.query
+        const warga = await Warga.findByPk(id)
+        res.json({status: 'ok', data: warga})
+    } catch (error) {
+        console.log(error, '<-- error get warga by id');
+    }
+}
+
 const createWarga = async (req, res) => {
     try {
         const { nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan, kewarganegaraan, status, agama, alamat, rt_rw } = req.body
@@ -160,4 +170,4 @@ const deleteWarga = async (req, res) => {
     }
 }
 
-module.exports = { getAllWarga, createWarga, deleteWarga, createWargaPelapor }
+module.exports = { getAllWarga, createWarga, deleteWarga, createWargaPelapor, getWargaById }
