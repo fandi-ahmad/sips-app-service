@@ -2,7 +2,7 @@
 # Sistem Informasi Pencatat Surat (SIPS) - Service
 This application was created for the administrative purposes of making letters as well as filing for the Balaroa Village Office, Palu City. here is a part from the backend side for the frontend display in the repository [sips-app-admin](https://github.com/fandi-ahmad/sips-app-admin).
 
-## Installation
+### Installation
 First you must install node js. Duplicate and rename the `.env` and `config.json` files, then remove the `.example` in the file names.
 
 ``` 
@@ -44,7 +44,7 @@ Now that run the command below.
 
 Run this project.
 ```
-  npm run dev
+  npm start
 ```
 
 
