@@ -39,6 +39,12 @@ module.exports = {
       penghasilan: {
         type: Sequelize.STRING
       },
+      desa: {
+        type: Sequelize.STRING
+      },
+      kecamatan: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

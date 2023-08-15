@@ -23,7 +23,7 @@ const getAllSuratKetUsaha = async (req, res) => {
                 surat_khusus.id_ket_usaha, ku.penghasilan,
 
                 ku.nama_usaha, ku.jenis_usaha, ku.npwp, ku.no_izin_usaha, ku.no_fiskal,
-                ku.luas_tempat_usaha, ku.alamat_usaha, ku.tahun_berdiri, ku.bertempat
+                ku.luas_tempat_usaha, ku.alamat_usaha, ku.tahun_berdiri, ku.bertempat, ku.desa, ku.kecamatan
 
             FROM surats 
             JOIN pegawais ON (surats.id_pegawai = pegawais.id)
@@ -82,7 +82,9 @@ const getAllSuratKetUsaha = async (req, res) => {
                     alamat_usaha: item.alamat_usaha, 
                     tahun_berdiri: item.tahun_berdiri, 
                     bertempat: item.bertempat,
-                    penghasilan: item.penghasilan
+                    penghasilan: item.penghasilan,
+                    desa: item.desa,
+                    kecamatan: item.kecamatan
                 }
             };
         });
@@ -108,7 +110,7 @@ const createSuratKetUsaha = async (req, res) => {
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai, no_surat_pengantar, nama_surat,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
-            alamat_usaha, tahun_berdiri, bertempat, penghasilan
+            alamat_usaha, tahun_berdiri, bertempat, penghasilan, desa, kecamatan
         } = req.body
 
         const wargaByNik = await Warga.findOne({
@@ -128,7 +130,9 @@ const createSuratKetUsaha = async (req, res) => {
                 alamat_usaha: alamat_usaha,
                 tahun_berdiri: tahun_berdiri,
                 bertempat: bertempat,
-                penghasilan: penghasilan
+                penghasilan: penghasilan,
+                desa: desa,
+                kecamatan: kecamatan
             })
 
             const newSuratKhusus = await Surat_khusus.create({
@@ -184,14 +188,16 @@ const createSuratKetUsaha = async (req, res) => {
                 alamat_usaha: alamat_usaha,
                 tahun_berdiri: tahun_berdiri,
                 bertempat: bertempat,
-                penghasilan: penghasilan
+                penghasilan: penghasilan,
+                desa: desa,
+                kecamatan: kecamatan
             })
     
             const newSuratKhusus = await Surat_khusus.create({
                 id_ket_usaha: newUsaha.id
             })
     
-            const newSurat = await Surat.create({
+            await Surat.create({
                 no_surat: no_surat,
                 no_surat_number: no_surat_number,
                 no_surat_pengantar: no_surat_pengantar,
@@ -223,7 +229,7 @@ const updateSuratKetUsaha = async (req, res) => {
             no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat, no_surat_pengantar,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
-            alamat_usaha, tahun_berdiri, bertempat, penghasilan
+            alamat_usaha, tahun_berdiri, bertempat, penghasilan, desa, kecamatan
         } = req.body
 
         const updateSurat = await Surat.findByPk(id_surat)
@@ -267,6 +273,8 @@ const updateSuratKetUsaha = async (req, res) => {
         updateKetUsaha.tahun_berdiri = tahun_berdiri
         updateKetUsaha.bertempat = bertempat
         updateKetUsaha.penghasilan = penghasilan
+        updateKetUsaha.desa = desa
+        updateKetUsaha.kecamatan = kecamatan
 
         updateSurat.save()
         updateWarga.save()
@@ -302,7 +310,7 @@ const deleteSuratKetUsaha = async (req, res) => {
         const deleteKetUsaha = await Ket_usaha.findByPk(id_ket_usaha)
 
         deleteSurat.destroy()
-        deleteWarga.destroy()
+        // deleteWarga.destroy()
         deleteSuratKhusus.destroy()
         deleteKetUsaha.destroy()
 
