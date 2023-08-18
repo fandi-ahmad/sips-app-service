@@ -33,7 +33,8 @@ const getAllSuratKetUsaha = async (req, res) => {
             where surats.nama_surat = "${name}" 
         `;
 
-        id ? query += ` AND surats.id = "${id}"` : null
+        // id ? query += ` AND surats.id = "${id}"` : null
+        if (id) { query += ` AND surats.id = "${id}"` }
 
         const dataSurat = await sequelize.query(query)
 
@@ -47,7 +48,6 @@ const getAllSuratKetUsaha = async (req, res) => {
                 nama_surat: item.nama_surat,
                 maksud: item.maksud,
                 isi_surat: item.isi_surat,
-                no_surat_pengantar: item.no_surat_pengantar,
                 tgl_surat_pengantar: item.tgl_surat_pengantar,
                 createdAt: item.createdAt,
                 pegawai: {
@@ -226,7 +226,7 @@ const updateSuratKetUsaha = async (req, res) => {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw,
 
-            no_surat, no_surat_number, maksud, isi_surat, id_pegawai, id_surat, no_surat_pengantar,
+            maksud, isi_surat, id_pegawai, id_surat, no_surat_pengantar,
 
             nama_usaha, jenis_usaha, npwp, no_izin_usaha, no_fiskal, luas_tempat_usaha,
             alamat_usaha, tahun_berdiri, bertempat, penghasilan, desa, kecamatan
@@ -300,9 +300,6 @@ const deleteSuratKetUsaha = async (req, res) => {
 
         const deleteSurat = await Surat.findByPk(id_surat)
 
-        const id_warga = deleteSurat.dataValues.id_warga
-        const deleteWarga = await Warga.findByPk(id_warga)
-
         const id_surat_khusus = deleteSurat.dataValues.id_surat_khusus
         const deleteSuratKhusus = await Surat_khusus.findByPk(id_surat_khusus)
 
@@ -310,7 +307,6 @@ const deleteSuratKetUsaha = async (req, res) => {
         const deleteKetUsaha = await Ket_usaha.findByPk(id_ket_usaha)
 
         deleteSurat.destroy()
-        // deleteWarga.destroy()
         deleteSuratKhusus.destroy()
         deleteKetUsaha.destroy()
 
