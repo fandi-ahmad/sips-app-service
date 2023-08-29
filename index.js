@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-const port = () => { return process.env.APP_PORT }
+// const port = () => { return process.env.APP_PORT }
+const port = 8000
 const router = require('./routes/router')
 const BodyParser = require("body-parser")
 const { config } = require('dotenv')
@@ -16,6 +17,6 @@ app.set('views', 'client/views')
 app.use(express.json())
 app.use(router)
 
-app.listen(port(), () => {
-  console.log(`Example app listening on port ${port()}`)
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
 })
