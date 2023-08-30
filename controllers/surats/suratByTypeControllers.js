@@ -23,14 +23,14 @@ const getSuratQuery = async (name, id, search, page = 1, limit = 0) => {
         JOIN pegawais ON (surats.id_pegawai = pegawais.id)
         JOIN wargas AS w ON (surats.id_warga = w.id)
     `;
+
+    // ===== save this code =====
     // if (name) {
     //     query += /*sql*/` WHERE surats.nama_surat = "${name}"`;
     // }
-
     // if (id) {
     //     query += ` AND surats.id = "${id}"`;
     // }
-
     // if (search) {
     //     query += /*sql*/ `
     //         WHERE 
@@ -69,7 +69,6 @@ const getSuratQuery = async (name, id, search, page = 1, limit = 0) => {
     if (limit > 0) {
         query += ` LIMIT ${limit} OFFSET ${offset}`;
     }
-    // query += ` LIMIT ${limit} OFFSET ${offset}`;
 
     const dataSurat = await sequelize.query(query)
 
@@ -321,8 +320,8 @@ const updateSuratByType = async (req, res) => {
             nama, nik, jenis_kelamin, tempat_lahir, tanggal_lahir, pekerjaan,
             kewarganegaraan, status, agama, alamat, rt_rw,
 
-            no_surat, no_surat_number, maksud, isi_surat, id_pegawai,
-            no_surat_pengantar, tgl_surat_pengantar, nama_surat, id
+            no_surat, no_surat_number, maksud, id_pegawai,
+            no_surat_pengantar, id
 
         } = req.body
 
@@ -345,7 +344,6 @@ const updateSuratByType = async (req, res) => {
         surat.no_surat_number = no_surat_number
         surat.maksud = maksud
         surat.no_surat_pengantar = no_surat_pengantar
-        // surat.nama_surat = nama_surat
         surat.id_pegawai = id_pegawai
 
         warga.save()
